@@ -10,6 +10,7 @@ import { MessageQueueComposer } from './MessageQueueComposer';
 import { CommandCenterPanel } from './CommandCenterPanel';
 import { disposeTerminal } from './terminalPool';
 import { SidebarTabs } from './SidebarTabs';
+import { ChatTab } from './ChatTab';
 import { ThreadsPanel } from './ThreadsPanel';
 import { ToolWaterfall } from './ToolWaterfall';
 import { AgentControlStrip } from './AgentControlStrip';
@@ -175,11 +176,11 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
         <PixelButton variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
           <span
             className="cth-tip cth-tip-wrap"
-            data-tip={`Edit ${agent.name}: their name and face, which engine they run on, and the briefing that tells them what they are for.`}
-            aria-label="Edit this agent"
+            data-tip={t('agentDetail.editTip', { name: agent.name })}
+            aria-label={t('agentDetail.editAria')}
             style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
           >
-            <Icon name="edit" />{!compactHeader && ' edit'}
+            <Icon name="edit" />{!compactHeader && ` ${t('agentDetail.edit')}`}
           </span>
         </PixelButton>
         {/* v0.3.4: the IDE lives at agent level (replaces the old files tab) —
@@ -271,6 +272,10 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
               {t('agentDetail.noPtyDesc')}
             </EmptyTab>
           )
+        )}
+
+        {sidebarTab === 'chat' && (
+          <ChatTab agent={agent} />
         )}
 
         {sidebarTab === 'git' && (

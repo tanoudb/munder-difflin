@@ -7,7 +7,7 @@ export type IconName =
   | 'gear' | 'plus' | 'x' | 'check' | 'arrow-right' | 'pause' | 'play'
   | 'bell' | 'folder' | 'terminal' | 'code' | 'web' | 'mcp' | 'sparkle'
   | 'expand' | 'minimize' | 'clock' | 'mic' | 'ledger' | 'info' | 'sidebar'
-  | 'image' | 'edit' | 'git';
+  | 'image' | 'edit' | 'git' | 'chat';
 
 interface IconDef {
   ink: string;     // primary color path d
@@ -58,6 +58,12 @@ const paths: Record<IconName, IconDef> = {
   play: {
     accentColor: 'var(--cth-mint)',
     ink:   'M4 3h2v2h2v2h2v2H8v2H6v2H4V3z'
+  },
+  // Speech bubble with a tail at the bottom left, three dots inside.
+  chat: {
+    accentColor: 'var(--cth-sky)',
+    ink:    'M1 2h14v10H7v1H6v1H5v1H4v-3H1V2zM3 4v6h10V4H3z',
+    accent: 'M4 6h2v2H4zM7 6h2v2H7zM10 6h2v2h-2z'
   },
   bell: {
     accentColor: 'var(--cth-peach)',

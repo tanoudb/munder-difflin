@@ -71,7 +71,7 @@ test('no French string is left as its English source', () => {
   // or it is a product name or a term French developers use as is.
   const SAME_ON_PURPOSE = new Set([
     // Same word in French.
-    'sidebar.terminal', 'sidebar.messages', 'sidebar.traces',
+    'sidebar.chat', 'sidebar.terminal', 'sidebar.messages', 'sidebar.traces',
     'settings.general.notifications', 'settings.general.maintenance',
     'settings.connections.port', 'settings.connections.secret',
     'settings.connections.mode', 'settings.connections.organisation',

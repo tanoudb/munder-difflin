@@ -33,7 +33,9 @@ import { MemoryManager } from './memory';
 import { KnowledgeManager } from './knowledge';
 import { MemoryReflector, type ReflectSettings } from './reflect';
 import { PersistStore } from './db';
-import { readAgentUsage, readContextTokens, seedSessionTranscript, resolveSessionCwd } from './transcript';
+import { projectDir, readAgentUsage, readContextTokens, seedSessionTranscript, resolveSessionCwd } from './transcript';
+import { readChatItems } from './chat';
+import type { ChatSnapshot } from '../shared/chat';
 import { listIssues, listCIRuns } from './github';
 import { SlackWebhookServer, SlackReplyServer, postSlackReply, type SlackEventFile } from './slack';
 import {
@@ -3866,6 +3868,26 @@ ipcMain.handle('hive:agentContext', (_evt, agentId: unknown) => {
   const tp = hookServer.transcriptPath(agentId);
   if (!tp) return null;
   return readContextTokens(tp) ?? 0;
+});
+
+// The Chat tab: an agent's conversation, read from its Claude Code transcript.
+// The live path comes from the agent's hooks (as for the context gauge above);
+// before the first hook of this app run, fall back to the session the registry
+// recorded, which is where Claude Code keeps writing after a restart.
+ipcMain.handle('hive:agentChat', (_evt, agentId: unknown): ChatSnapshot => {
+  const none = (reason: ChatSnapshot['reason']): ChatSnapshot => ({ supported: false, reason, items: [] });
+  if (typeof agentId !== 'string' || !hive.enabled()) return none('no-session');
+  const agent = hive.registry().agents[agentId];
+  if (!agent) return none('no-session');
+  if (!isClaudeProvider(agent.provider ?? 'claude')) return none('engine');
+  let tp = hookServer.transcriptPath(agentId);
+  if (!tp && agent.sessionId && agent.cwd) {
+    const recorded = join(projectDir(agent.cwd), `${agent.sessionId}.jsonl`);
+    if (existsSync(recorded)) tp = recorded;
+  }
+  if (!tp) return none('no-session');
+  const items = readChatItems(tp);
+  return items ? { supported: true, items } : none('no-session');
 });
 
 // A consolidated, NON-SENSITIVE per-agent directory for the voice read-layer

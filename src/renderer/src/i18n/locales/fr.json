@@ -125,6 +125,7 @@
     "restoreAll": "tout restaurer ({{count}})"
   },
   "sidebar": {
+    "chat": "chat",
     "terminal": "terminal",
     "git": "git",
     "messages": "messages",
@@ -153,7 +154,10 @@
     "terminalTip": "Ouvrir l'application terminal de votre système dans {{cwd}} — un shell normal dans le dossier de cet agent, distinct du terminal de l'agent lui-même.",
     "openIde": "Ouvrir l'IDE",
     "ide": "IDE",
-    "openTerminalAria": "Ouvrir un terminal système dans le dossier de cet agent"
+    "openTerminalAria": "Ouvrir un terminal système dans le dossier de cet agent",
+    "edit": "modifier",
+    "editTip": "Modifier {{name}} : son nom et son visage, son poste et son équipe, son moteur, et les consignes qui disent à quoi il sert.",
+    "editAria": "Modifier cet agent"
   },
   "settingsHero": {
     "planLabel": "Local",
@@ -1159,6 +1163,28 @@
     "more": "plus",
     "replyPlaceholder": "Répondre à {{name}}…",
     "send": "Envoyer"
+  },
+  "chat": {
+    "recipient": "Parler à",
+    "groupDirector": "Direction",
+    "groupDeputies": "Chefs d'équipe",
+    "groupEmployees": "Employés",
+    "you": "Vous ({{title}})",
+    "placeholder": "Message à {{name}}… (Entrée pour envoyer, Maj+Entrée pour aller à la ligne)",
+    "send": "envoyer",
+    "queued": "en file d'attente — part dès que {{name}} est libre",
+    "toolCalls": "{{count}} appel d'outil",
+    "toolCallsPlural": "{{count}} appels d'outils",
+    "interrupted": "Interrompu",
+    "inbox": "Rappel de la boîte de réception",
+    "command": "Commande {{command}}",
+    "compacted": "Contexte compacté",
+    "empty": "Pas encore de message. Écrivez à {{name}} ci-dessous.",
+    "noSession": "La conversation avec {{name}} apparaîtra ici dès que sa session aura démarré.",
+    "unsupportedEngine": "La vue chat lit les conversations Claude Code. Pour ce moteur, utilisez l'onglet terminal.",
+    "openTerminal": "ouvrir le terminal",
+    "blocked": "{{name}} attend votre réponse dans le terminal.",
+    "loading": "Chargement de la conversation…"
   },
   "skillsTab": {
     "installed": "Installées",

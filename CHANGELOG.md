@@ -8,6 +8,15 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **A Chat tab, like the Claude app.** Each agent's panel opens on a new Chat tab (next to Terminal)
+  that shows the conversation as bubbles: what you wrote, the agent's answers rendered as markdown,
+  its tool calls folded into one expandable line, and system moments (an interruption, an inbox
+  reminder, a compaction) as quiet dividers. A "Talk to" selector at the top switches between the
+  director, the team leads and the employees. What you type goes through the same queue as the
+  terminal's composer — it waits, faded, until the agent is free — and when an agent is waiting on
+  you in its terminal the tab says so and takes you there. The conversation is read from the
+  agent's Claude Code session transcript (tail only, cached), so other engines keep using the
+  terminal.
 - **You are the PDG, and every agent knows it.** A new Settings → Company tab takes your name and
   title (PDG by default) and what each position is called: the director (the orchestrator), a
   deputy director who leads one team, and the employees. Every agent is told, in the system prompt

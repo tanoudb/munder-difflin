@@ -125,6 +125,7 @@
     "restoreAll": "restore all ({{count}})"
   },
   "sidebar": {
+    "chat": "chat",
     "terminal": "terminal",
     "git": "git",
     "messages": "messages",
@@ -153,7 +154,10 @@
     "terminalTip": "Open your system terminal app in {{cwd}} — a normal shell in this agent's folder, separate from the agent's own terminal.",
     "openIde": "Open the IDE",
     "ide": "IDE",
-    "openTerminalAria": "Open a system terminal in this agent's folder"
+    "openTerminalAria": "Open a system terminal in this agent's folder",
+    "edit": "edit",
+    "editTip": "Edit {{name}}: their name and face, their position and team, which engine they run on, and the briefing that tells them what they are for.",
+    "editAria": "Edit this agent"
   },
   "settingsHero": {
     "planLabel": "Local",
@@ -1159,6 +1163,28 @@
     "more": "more",
     "replyPlaceholder": "Reply to {{name}}…",
     "send": "Send"
+  },
+  "chat": {
+    "recipient": "Talk to",
+    "groupDirector": "Director",
+    "groupDeputies": "Team leads",
+    "groupEmployees": "Employees",
+    "you": "You ({{title}})",
+    "placeholder": "Message {{name}}… (Enter to send, Shift+Enter for a new line)",
+    "send": "send",
+    "queued": "queued — delivered as soon as {{name}} is free",
+    "toolCalls": "{{count}} tool call",
+    "toolCallsPlural": "{{count}} tool calls",
+    "interrupted": "Interrupted",
+    "inbox": "Inbox reminder from the office",
+    "command": "Ran {{command}}",
+    "compacted": "Context compacted",
+    "empty": "No messages yet. Write to {{name}} below.",
+    "noSession": "{{name}}'s conversation will appear here once its session has started.",
+    "unsupportedEngine": "The chat view reads Claude Code conversations. For this engine, use the terminal tab.",
+    "openTerminal": "open the terminal",
+    "blocked": "{{name}} is waiting for your answer in the terminal.",
+    "loading": "Loading the conversation…"
   },
   "skillsTab": {
     "installed": "Installed",
