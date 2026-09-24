@@ -6,6 +6,7 @@ import { useHasTerminalDraft } from './terminalPool';
 import { SpritePortrait } from './SpritePortrait';
 import { RealtimeMichaelToggle } from './RealtimeMichaelToggle';
 import { CostHud } from '@/realtime/CostHud';
+import { REALTIME_VOICE } from '@shared/features';
 import { AccentColorName } from '@/design/tokens';
 import { OfficeCharacterName } from '@/scene/office/cast';
 import { AgentNameEditor } from './AgentNameEditor';
@@ -255,8 +256,8 @@ export function AgentCard({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <RealtimeMichaelToggle />
-                <CostHud compact />
+                {REALTIME_VOICE && <RealtimeMichaelToggle />}
+                {REALTIME_VOICE && <CostHud compact />}
               </div>
             ) : (
               <div

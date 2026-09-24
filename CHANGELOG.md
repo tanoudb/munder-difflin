@@ -47,6 +47,19 @@ All notable changes to this project are documented here. The format is based on
   data and never markup, and a model id is length-capped and stripped of control characters before it
   can reach a `--model` flag on a spawn command line. Same mechanism as the Settings hero card.
 
+### Removed
+
+- **Nothing to buy, nothing to star.** Settings → General no longer carries the Pro announcement,
+  the Founders' Wall offer or the sponsor slot fetched from the original repository. Its card now
+  shows the version, a one-line description, "what's new", "report a problem" and the changelog,
+  all pointing at this repository. The update toast no longer asks for a GitHub star, and the
+  open-models and Mac Mini guides that linked to the original website are gone. The model catalog
+  is read from this repository too, so the app no longer contacts the original project.
+- **No pay-per-use voice.** Talking to the orchestrator in real time ran on OpenAI's Realtime API,
+  billed per use on your own key. Its Talk toggle, cost meter and Settings section are hidden behind
+  `REALTIME_VOICE` in `src/shared/features.ts`; the code stays, so it is one line to bring back.
+  Free Flow dictation (Groq, free tier) is unchanged.
+
 ## [0.4.6] — 2026-08-27
 
 **The release that speaks your language and updates itself.** The interface runs in Chinese and

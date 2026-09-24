@@ -18,6 +18,7 @@ import { OnboardingWizard } from '@/components/OnboardingWizard';
 import { HivePicker } from '@/components/HivePicker';
 import { QuitWarningModal, type ClosingTimeState } from '@/components/QuitWarningModal';
 import { CompletionToast } from '@/realtime/CompletionToast';
+import { REALTIME_VOICE } from '@shared/features';
 import { UpdateToast } from '@/components/UpdateToast';
 import { UpdateBadge } from '@/components/UpdateBadge';
 import { useAppTheme, toggleAppTheme } from '@/design/theme';
@@ -276,7 +277,7 @@ export function App() {
     }}>
       {/* rt-12: global fixed-overlay toast for voice-Michael completions ("Oscar
           finished X"). Self-positions bottom-right; renders null until one arrives. */}
-      <CompletionToast />
+      {REALTIME_VOICE && <CompletionToast />}
       {/* v0.3.4: background-update toast ("restart to update"); renders null until
           main's updater pushes a status. */}
       <UpdateToast />

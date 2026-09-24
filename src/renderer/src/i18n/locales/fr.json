@@ -157,21 +157,12 @@
     "openTerminalAria": "Ouvrir un terminal système dans le dossier de cet agent"
   },
   "settingsHero": {
-    "sponsoredBy": "Sponsorisé par",
-    "visit": "visiter",
+    "planLabel": "Local",
+    "planBlurb": "Chaque agent tourne sur votre machine, dans vos dossiers, avec vos propres clés. Aucune limite de postes, rien n'est facturé.",
     "whatsNew": "nouveautés",
     "whatsNewTitle": "Afficher les notes de version de la dernière mise à jour annoncée",
-    "starOnGitHub": "une étoile sur GitHub",
     "reportProblem": "signaler un problème",
-    "fullChangelog": "journal des modifications complet →",
-    "announcement": "Annonce",
-    "proLaunch": "La v0.5.0 arrive avec Munder Difflin Pro.",
-    "proCommunityFree": "L'édition Community reste gratuite, reste ouverte et continue de recevoir des mises à jour.",
-    "proParagraph": "Pro apporte de nouvelles fonctionnalités et intégrations, avec d'autres publiées tout au long de l'année, et garde une longueur d'avance sur Community, pour les utilisateurs avancés qui veulent exploiter tout le potentiel des agents de code et des harnais d'agents. La feuille de route Pro inclut aussi une application mobile.",
-    "foundersWallTitle": "Sur le mur des fondateurs ?",
-    "foundersWallBody": "Un mois de Munder Difflin Pro offert, puis 50 % de réduction sur l'abonnement annuel. Pour les 100 premières personnes sur le mur.",
-    "seeTheWall": "voir le mur",
-    "joinDiscord": "rejoindre le Discord"
+    "fullChangelog": "journal des modifications complet →"
   },
   "officeTheme": {
     "title": "Thème du bureau",
@@ -532,9 +523,7 @@
     "ossByok": "Via un fournisseur open source · BYOK",
     "ossLocalTitle": "{{slug}} · nécessite ~{{ram}} de RAM — à récupérer avec : ollama pull {{tag}}",
     "ossByokTitle": "{{slug}} · définissez {{keyEnv}} dans Paramètres → Moteurs IA",
-    "byokNote": "Les clés BYOK et les endpoints locaux de ce moteur se trouvent dans Paramètres → Moteurs IA. Nouveau avec les modèles locaux ? Lisez « tourner sur des modèles ouverts » ou « installer sur un Mac Mini ». Le test de bout en bout en conditions réelles attend encore de vrais appels au modèle (à vérifier sur l'appareil).",
-    "runOnOpenModels": "tourner sur des modèles ouverts",
-    "setUpMacMini": "installer sur un Mac Mini",
+    "byokNote": "Les clés BYOK et les endpoints locaux de ce moteur se trouvent dans Paramètres → Moteurs IA. Le test de bout en bout en conditions réelles attend encore de vrais appels au modèle (à vérifier sur l'appareil).",
     "command": "Commande",
     "commandAuto": "Commande (mode auto activé)",
     "templates": "Préréglages",
@@ -830,9 +819,6 @@
     "cleared": "effacée",
     "localEndpoint": "ENDPOINT LOCAL · MODÈLE PAR DÉFAUT (PAR MOTEUR)",
     "defaultModelPlaceholder": "modèle par défaut (fournisseur/modèle)",
-    "runningOpenModels": "Vous utilisez des modèles ouverts ? Guides pas à pas :",
-    "runOnOpenModels": "faire tourner Munder Difflin sur des modèles ouverts",
-    "setUpMacMini": "l'installer sur un Mac Mini",
     "autoModeCaveat": "⚠ En mode auto, ces moteurs tournent avec un accès complet au système de fichiers et au shell (sans sandbox) — comme le mode bypass de Claude. Désactivez le mode auto (Général) pour qu'ils demandent d'abord. La vérification de bout en bout avec de vrais appels au modèle attend vos clés / un LLM local."
   },
   "mcpDefaults": {

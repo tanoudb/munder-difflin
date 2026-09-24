@@ -24,6 +24,7 @@ import { AiEnginesSettings } from './AiEnginesSettings';
 import { REALTIME_MODEL } from '@shared/realtimePricing';
 import { RealtimeDevicePicker } from '@/realtime/DevicePicker';
 import { CostHud } from '@/realtime/CostHud';
+import { REALTIME_VOICE } from '@shared/features';
 import {
   isArabicTerminalEnabled,
   isArabicTerminalFollowingLanguage,
@@ -974,10 +975,8 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                   {/* GENERAL */}
                   {activeSection === 'General' && (
                     <>
-                      {/* Who you are and what this install is — version, plan,
-                          sponsor, and the app-level actions that belong to none
-                          of the settings below. Slots for a future subscription
-                          and a sponsor live here; both render nothing until set. */}
+                      {/* What this install is — its version, and the app-level
+                          actions that belong to none of the settings below. */}
                       <SettingsHeroCard />
 
                       <div style={{ height: 1, background: 'var(--cth-ink-300)' }} />
@@ -1970,9 +1969,11 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                         )}
                       </div>
 
-                      <div style={sectionRule} />
+                      {REALTIME_VOICE && <div style={sectionRule} />}
 
-                      {/* Realtime Michael — voice device selection (rt-8) */}
+                      {/* Realtime Michael — voice device selection (rt-8). Hidden in
+                          Open Space: it runs on OpenAI's pay-per-use Realtime API. */}
+                      {REALTIME_VOICE && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <div style={sectionHeadTight}>
                           {t('settings.voice.realtime')}
@@ -2070,6 +2071,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                           </span>
                         </label>
                       </div>
+                      )}
                     </>
                   )}
 

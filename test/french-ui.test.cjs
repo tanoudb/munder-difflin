@@ -81,7 +81,7 @@ test('no French string is left as its English source', () => {
     'commandCenter.agents', 'commandCenter.budget', 'addAgent.description',
     'triggersTab.organisation', 'webhooksSection.secret',
     'triggerHistory.kindDirective', 'triggerHistory.kindCommunication',
-    'gitTab.sectionBranches', 'idePanel.code',
+    'gitTab.sectionBranches', 'idePanel.code', 'settingsHero.planLabel',
     // Product and feature names.
     'settings.connections.slack', 'settings.voice.freeFlow',
     'onboarding.providerBlurb.claude', 'onboarding.providerBlurb.codex',
