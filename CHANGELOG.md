@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **Open Space.** The app is renamed from Munder Difflin: the product name, the window titles, the
+  installers (`Open-Space-<version>-…`), the macOS permission prompts, and the shareable-hire link,
+  which is now `openspace://hire?src=…`. Hire manifests keep their `munder-difflin/hire@1` spec tag,
+  so hires written for Munder Difflin still import. The app id is `io.github.tanoudb.openspace`, so
+  Open Space keeps its settings apart from a Munder Difflin install on the same machine, and updates
+  are read from this repository's releases.
 - **French first.** The interface is in French by default, with English as the second language in
   Settings → General → Language; the OS locale is still never read. Every string in the locale
   files is translated, with its placeholders, markup and array lengths intact, and a test holds

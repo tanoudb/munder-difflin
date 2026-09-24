@@ -578,7 +578,7 @@
   },
   "onboarding": {
     "titles": {
-      "persona": "BIENVENUE CHEZ MUNDER DIFFLIN",
+      "persona": "BIENVENUE DANS L'OPEN SPACE",
       "welcome": "DÉCOUVREZ VOTRE BUREAU",
       "home": "ÉTAPE 1 SUR 4 · DOSSIER DU HARNAIS",
       "homePlain": "ÉTAPE 1 SUR 4 · UN DOSSIER POUR L'APP",
@@ -591,7 +591,7 @@
     },
     "persona": {
       "headline": "UN CLONE DE VOUS, AU TRAVAIL 24 H/24, 7 J/7",
-      "body": "Munder Difflin transforme l'agent CLI que vous utilisez déjà en un clone de vous — qui dirige un bureau d'agents au long cours et continue de travailler pendant votre absence. Il gère tout ce qui les entoure : contexte, mémoire, tâches, déclencheurs, environnement, fichiers et intégrations.",
+      "body": "Open Space transforme l'agent CLI que vous utilisez déjà en un clone de vous — qui dirige un bureau d'agents au long cours et continue de travailler pendant votre absence. Il gère tout ce qui les entoure : contexte, mémoire, tâches, déclencheurs, environnement, fichiers et intégrations.",
       "bodyLocal": " Tout tourne sur cette machine.",
       "ask": "D'ABORD — QUI ÊTES-VOUS ? (nous adapterons la configuration)",
       "technicalTitle": "JE SUIS TECHNIQUE",
@@ -692,7 +692,7 @@
       "openAtLogin": "OUVRIR À L'OUVERTURE DE SESSION",
       "openAtLoginDesc": "Relancer le harnais après un redémarrage pour que les missions planifiées reprennent d'elles-mêmes. Aucune confirmation — s'applique immédiatement.",
       "shareStats": "PARTAGER DES STATISTIQUES D'UTILISATION ANONYMES",
-      "shareStatsDesc": "Une poignée d'événements anonymes (application ouverte, agent lancé, fonctionnalité utilisée) qui aident à améliorer Munder Difflin — jamais de prompts, de code, de chemins de fichiers ni de sortie d'agent. Liste complète dans TELEMETRY.md ; modifiable à tout moment dans les Paramètres.",
+      "shareStatsDesc": "Une poignée d'événements anonymes (application ouverte, agent lancé, fonctionnalité utilisée) qui aident à améliorer Open Space — jamais de prompts, de code, de chemins de fichiers ni de sortie d'agent. Liste complète dans TELEMETRY.md ; modifiable à tout moment dans les Paramètres.",
       "stayAwake": "RESTER ÉVEILLÉ SUR SECTEUR (MANUEL)",
       "stayAwakeDescMac": "macOS ne vous laisse régler celui-ci que vous-même. Dans Batterie → Options, activez « Empêcher la suspension d'activité automatique sur l'adaptateur secteur lorsque l'écran est éteint » pour que les minuteurs continuent de se déclencher écran éteint. Sans réglage anti-veille, le Mac se met vraiment en veille — le travail survit et rattrape son retard au réveil.",
       "stayAwakeDescWindows": "Windows ne vous laisse régler celui-ci que vous-même. Dans Paramètres → Système → Alimentation et batterie → Écran et veille, réglez la mise en veille « Sur batterie » et « Sur secteur » sur Jamais (ou allongez les délais) pour que les minuteurs continuent de se déclencher. Sans réglage anti-veille, Windows se met vraiment en veille — le travail survit et rattrape son retard au réveil.",
@@ -881,7 +881,7 @@
     "downloadingHeadline": "Téléchargement de la v{{version}}",
     "downloadingDetail": "{{percent}} % effectués. Vous pouvez continuer à travailler ; c'est vous qui déclenchez le redémarrage.",
     "downloadedHeadline": "La v{{version}} est prête à être installée",
-    "downloadedDetail": "Redémarrez Munder Difflin pour terminer la mise à jour depuis la v{{v}}.",
+    "downloadedDetail": "Redémarrez Open Space pour terminer la mise à jour depuis la v{{v}}.",
     "restartBtn": "Redémarrer pour mettre à jour",
     "manualDetail": "Cette installation ne peut pas se mettre à jour toute seule — téléchargez-la depuis la page de la version.",
     "manualDetailReason": "Cette installation ne peut pas se mettre à jour toute seule ({{reason}}) — téléchargez-la depuis la page de la version.",
@@ -908,7 +908,7 @@
     "webhooks": "WEBHOOKS",
     "webhooksBlurb": "Laisser un système extérieur envoyer du travail.",
     "organisation": "ORGANISATION",
-    "organisationBlurb": "Laisser le Munder Difflin d'un coéquipier écrire au vôtre."
+    "organisationBlurb": "Laisser l'Open Space d'un coéquipier écrire au vôtre."
   },
   "orgSection": {
     "acceptMessages": "Accepter les messages de votre organisation",

@@ -1,6 +1,6 @@
-appId: in.munderdiffl.app
-productName: Munder Difflin
-copyright: Copyright © 2026 Chaitanya Giri
+appId: io.github.tanoudb.openspace
+productName: Open Space
+copyright: Copyright © 2026 tanoudb. Based on Munder Difflin, Copyright © 2026 Chaitanya Giri (MIT)
 
 # Where electron-updater looks for new versions (latest*.yml + assets on GitHub
 # releases). The release workflow still uploads assets itself (--publish never);
@@ -8,7 +8,7 @@ copyright: Copyright © 2026 Chaitanya Giri
 # knows which repo to poll.
 publish:
   provider: github
-  owner: chaitanyagiri
+  owner: tanoudb
   repo: munder-difflin
 
 # Bake the update toast's "What's new" list straight into latest*.yml.
@@ -35,12 +35,12 @@ releaseInfo:
 # (the hook no-ops otherwise, so contributor builds still work). Root-level hook.
 afterSign: build/notarize.cjs
 
-# Register the munderdifflin:// URL scheme (shareable-hires deep link) in the
+# Register the openspace:// URL scheme (shareable-hires deep link) in the
 # packaged app: CFBundleURLTypes on macOS, registry entries via NSIS on Windows.
 protocols:
-  - name: Munder Difflin
+  - name: Open Space
     schemes:
-      - munderdifflin
+      - openspace
 
 # electron-vite emits the app into out/; package exactly that plus what the
 # runtime needs. node-pty is native, so keep it out of the asar.
@@ -92,15 +92,14 @@ mac:
   # the privacy prompt and, for a signed app, remembers the grant — so the user
   # is asked ONCE instead of on every agent action.
   extendInfo:
-    NSDocumentsFolderUsageDescription: "Munder Difflin runs your Claude Code agents, which read and write files in the project folders you point them at."
-    NSDesktopFolderUsageDescription: "Munder Difflin's agents may work on projects located on your Desktop."
-    NSDownloadsFolderUsageDescription: "Munder Difflin's agents may work on projects located in your Downloads."
-    NSRemovableVolumesUsageDescription: "Munder Difflin's agents may work on projects located on external volumes."
-    NSNetworkVolumesUsageDescription: "Munder Difflin's agents may work on projects located on network volumes."
-    # The microphone is used by two opt-in, off-by-default voice features: Free
-    # Flow dictation (Groq transcription) and Realtime Michael (live voice chat
-    # with the orchestrator via OpenAI). Mic access only happens while one is on.
-    NSMicrophoneUsageDescription: "Munder Difflin uses your microphone only for its opt-in voice features: Free Flow dictation (transcribed by Groq into the message queue) and talking to Michael in real time (streamed to OpenAI). The mic is off unless you turn one of these on."
+    NSDocumentsFolderUsageDescription: "Open Space fait tourner vos agents Claude Code, qui lisent et écrivent des fichiers dans les dossiers de projet que vous leur indiquez."
+    NSDesktopFolderUsageDescription: "Les agents d'Open Space peuvent travailler sur des projets situés sur votre Bureau."
+    NSDownloadsFolderUsageDescription: "Les agents d'Open Space peuvent travailler sur des projets situés dans vos Téléchargements."
+    NSRemovableVolumesUsageDescription: "Les agents d'Open Space peuvent travailler sur des projets situés sur des disques externes."
+    NSNetworkVolumesUsageDescription: "Les agents d'Open Space peuvent travailler sur des projets situés sur des volumes réseau."
+    # The microphone is used by one opt-in, off-by-default voice feature: Free
+    # Flow dictation (Groq transcription). Mic access only happens while it is on.
+    NSMicrophoneUsageDescription: "Open Space utilise votre micro uniquement pour la dictée Free Flow, que vous activez vous-même (transcrite par Groq dans la file de messages). Le micro reste coupé tant qu'elle n'est pas activée."
   # Hardened runtime + entitlements so the spawned `claude` agents inherit this
   # app's TCC responsibility (one grant covers them all) and node-pty can load.
   hardenedRuntime: true
@@ -130,10 +129,10 @@ mac:
       arch: [universal]
     - target: zip
       arch: [universal]
-  artifactName: Munder-Difflin-${version}-mac-${arch}.${ext}
+  artifactName: Open-Space-${version}-mac-${arch}.${ext}
 
 dmg:
-  title: Munder Difflin ${version}
+  title: Open Space ${version}
 
 # ---- Windows ----
 win:
@@ -148,11 +147,11 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  artifactName: Munder-Difflin-${version}-win-x64-setup.exe
-  shortcutName: Munder Difflin
+  artifactName: Open-Space-${version}-win-x64-setup.exe
+  shortcutName: Open Space
 
 portable:
-  artifactName: Munder-Difflin-${version}-win-x64-portable.exe
+  artifactName: Open-Space-${version}-win-x64-portable.exe
 
 # ---- Linux ----
 linux:
@@ -161,4 +160,4 @@ linux:
   target:
     - target: AppImage
       arch: [x64]
-  artifactName: Munder-Difflin-${version}-linux-x86_64.AppImage
+  artifactName: Open-Space-${version}-linux-x86_64.AppImage
