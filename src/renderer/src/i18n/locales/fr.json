@@ -241,7 +241,7 @@
       "telemetry": "Statistiques d'utilisation anonymes",
       "telemetryDesc": "Une poignée d'événements anonymes (application ouverte, agent lancé, fonctionnalité utilisée) — jamais de prompts, de code, de chemins ni de sortie d'agent. Liste complète dans TELEMETRY.md.",
       "language": "Langue",
-      "languageDesc": "Choisissez la langue de l'interface. L'anglais est la langue par défaut.",
+      "languageDesc": "Choisissez la langue de l'interface. Le français est la langue par défaut.",
       "dangerZone": "ZONE DANGEREUSE",
       "dangerDesc": "La réinitialisation efface les souvenirs de {{godName}}, toute la ruche (chaque agent, message, tâche et le tableau), le palais de mémoire sémantique et tous les paramètres — puis vous ramène à l'assistant de configuration.",
       "resetStartOver": "réinitialiser et recommencer",

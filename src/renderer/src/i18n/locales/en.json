@@ -241,7 +241,7 @@
       "telemetry": "Anonymous usage stats",
       "telemetryDesc": "A handful of anonymous events (app opened, agent spawned, feature used) — never prompts, code, paths, or agent output. Full list in TELEMETRY.md.",
       "language": "Language",
-      "languageDesc": "Choose the language for the app interface. English is the default.",
+      "languageDesc": "Choose the language for the app interface. French is the default.",
       "dangerZone": "DANGER ZONE",
       "dangerDesc": "Reset wipes {{godName}}'s memories, the entire hive (every agent, message, task, and the board), the semantic-memory palace, and all settings - then takes you back to onboarding.",
       "resetStartOver": "reset & start over",

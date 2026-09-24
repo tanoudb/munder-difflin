@@ -1,8 +1,8 @@
 'use strict';
 
-// The French locale. It lands under the same condition as zh-CN and ar:
-// NOTHING CHANGES FOR A USER WHO HAS NOT PICKED IT. French reads left to right,
-// so beyond the strings themselves there is no layout to gate.
+// The French locale. Open Space is French first: French is the default
+// language, English is the second one and the fallback for a missing key, and
+// the OS locale is never read.
 //
 // These tests hold coverage and shape — every key present, every placeholder,
 // tag and array intact — so a missing or broken string cannot slip in. They do
@@ -38,6 +38,22 @@ test('fr is registered everywhere a language has to be registered', () => {
   assert.match(src, /fr: \{ translation: fr \}/, 'fr is missing from resources');
   assert.match(src, /supportedLngs: \[[^\]]*'fr'[^\]]*\]/, 'fr is missing from supportedLngs');
   assert.match(src, /code: 'fr'[^}]*dir: 'ltr'/, 'fr is not in LANGUAGES as left-to-right');
+});
+
+test('French is the default, English the fallback, and the OS locale is never read', () => {
+  const src = read('src/renderer/src/i18n/index.ts');
+  const code = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '');
+  assert.match(code, /return 'fr';/, 'with nothing saved the app must start in French');
+  assert.match(code, /fallbackLng: 'en'/, 'a missing French key must fall back to English');
+  assert.ok(!code.includes('navigator'), 'the default language must never come from the OS');
+});
+
+test('the picker offers French first, then English, and nothing else', () => {
+  const src = read('src/renderer/src/i18n/index.ts');
+  const list = src.slice(src.indexOf('export const LANGUAGES'), src.indexOf('] as const'));
+  const codes = [...list.matchAll(/code: '([\w-]+)'/g)].map((m) => m[1]);
+  assert.deepEqual(codes, ['fr', 'en']);
+  assert.match(src, /supportedLngs: \['fr', 'en'\]/);
 });
 
 test('fr has exactly the same key tree as en', () => {
@@ -129,9 +145,11 @@ test('strings about ONE agent interpolate {{name}}, not the orchestrator', () =>
   }
 });
 
-test('the terminal setting still explains its performance cost in French', () => {
-  const g = fr.settings.general;
-  assert.ok(g.arabicTerminalDesc.length > 80, 'the description is too short to explain the tradeoff');
-  assert.match(g.arabicTerminalDesc, /GPU/);
-  assert.ok(g.arabicTerminalFollowsLanguage, 'fr never says the value follows the language');
+test('the terminal setting still explains its performance cost, in every locale', () => {
+  for (const [code, l] of [['en', en], ['fr', fr]]) {
+    const g = l.settings.general;
+    assert.ok(g.arabicTerminalDesc.length > 80, `${code}: too short to explain the tradeoff`);
+    assert.match(g.arabicTerminalDesc, /GPU/, `${code} no longer names the GPU renderer`);
+    assert.ok(g.arabicTerminalFollowsLanguage, `${code} never says the value follows the language`);
+  }
 });

@@ -8,12 +8,13 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
-- **The interface speaks French.** Pick Français in Settings → General → Language. Every string in
-  the locale files is translated, with its placeholders, markup and array lengths intact, and a test
-  holds that shape. Nothing changes for anyone who does not pick it: English stays the default and
-  the OS locale is still never read. A handful of strings are still hardcoded in components (the
-  engine install badges, the top bar's auto-mode label, the office theme descriptions) and stay
-  English in every language.
+- **French first.** The interface is in French by default, with English as the second language in
+  Settings → General → Language; the OS locale is still never read. Every string in the locale
+  files is translated, with its placeholders, markup and array lengths intact, and a test holds
+  that shape. Chinese and Arabic are no longer shipped, so a new string needs two translations, not
+  four; the right-to-left machinery stays in the code, inert. A handful of strings are still
+  hardcoded in components (the engine install badges, the top bar's auto-mode label, the office
+  theme descriptions) and stay English in both languages.
 - **Tasks show their id.** The one thing people actually refer to a card by — `bmt-12` — was not
   displayed anywhere: not on the kanban card, which printed only the title and the assignee, and not
   in the detail view behind it. It now leads the card above the title, and leads the detail view's
