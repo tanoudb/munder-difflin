@@ -634,9 +634,11 @@ const initialSidebarWidth = (() => {
 const initialSidebarTab: SidebarTab = (() => {
   try {
     const v = window.localStorage.getItem(LS_SIDEBAR_TAB);
-    if (v === 'terminal' || v === 'messages' || v === 'traces' || v === 'git') return v;
+    if (v === 'chat' || v === 'terminal' || v === 'messages' || v === 'traces' || v === 'git') return v;
   } catch { /* noop */ }
-  return 'terminal';
+  // Open Space opens on the conversation, like the Claude app; a tab someone
+  // already picked is kept above.
+  return 'chat';
 })();
 
 /** Does the user want focus mode as their default view?
