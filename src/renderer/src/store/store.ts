@@ -15,6 +15,7 @@ import {
 import { DEFAULT_ORG_TRIGGER, type OrgTriggerConfig, type WebhookTrigger } from '@shared/triggers';
 import { isCompactionCommand } from '@shared/providerAutomation';
 import { preferredAgentRole } from '@shared/agentRole';
+import { resolveCompany, type CompanyConfig, type ResolvedCompany } from '@shared/company';
 import { isInboxNudge } from '@shared/hiveNudge';
 import { refocusAfterRemoval, focusOnLoad, restoreFocus } from './focusMode';
 import { chooseRosterSource } from './rosterSource';
@@ -87,6 +88,11 @@ export interface Agent {
   /** Michael's prep assistant — send-only; enriches prompts and forwards them to
    *  the god. Excluded from broadcast fan-out and from the restorable-dead sweep. */
   isAssistant?: boolean;
+  /** Position in the company (shared/company.ts). Unset = employee; the god is
+   *  the director whatever this says. */
+  rank?: 'deputy' | 'employee';
+  /** The team a deputy leads or an employee belongs to. Unset/'' = no team. */
+  team?: string;
   /** The human has this agent 1:1 and Michael has been told to leave it alone.
    *  Mirrors `RegistryAgent.onHold`; main owns the record, this is the copy the
    *  title bar renders from. */
@@ -263,6 +269,11 @@ interface State {
   /** Mirror of config.freeflowEnabled so the composer can show/hide the Free Flow
    *  mic button reactively (set by App on config load and by Settings on save). */
   freeflowEnabled: boolean;
+  /** Settings → Company with every blank filled in: the human's name and title,
+   *  and what each position is called. Mirrored from the config at load and on
+   *  save, so the floor's badges and the editors read one copy. */
+  company: ResolvedCompany;
+  setCompany: (config: CompanyConfig | undefined) => void;
   setFreeflowEnabled: (on: boolean) => void;
   /** Mirror of `!!config.groqApiKey` — boolean presence ONLY; the key value never
    *  enters the store. Lets the composer show the voice button disabled (with a
@@ -876,6 +887,8 @@ export const useStore = create<State>((set, get) => ({
     set((s) => ({ drafts: { ...s.drafts, [agentId]: text } })),
   freeflowEnabled: false,
   setFreeflowEnabled: (on) => set({ freeflowEnabled: on }),
+  company: resolveCompany(undefined),
+  setCompany: (config) => set({ company: resolveCompany(config) }),
   hasGroqKey: false,
   setHasGroqKey: (has) => set({ hasGroqKey: has }),
   hasOpenAiKey: false,

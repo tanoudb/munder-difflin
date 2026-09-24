@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PositionFields } from './PositionFields';
+import { cleanTeam } from '@shared/company';
 import { PixelPanel } from './PixelPanel';
 import { PixelButton } from './PixelButton';
 import { SpritePortrait } from './SpritePortrait';
@@ -116,12 +118,13 @@ Repos, tools, style, or constraints to respect:
 // Command (it's the spawn command assembled from provider+model+flags); Workspace
 // clusters Folder + Git isolation + Resume (all "where/how it runs"). Capabilities
 // isn't a field here — it rides an imported hire manifest (the pinned banner).
-type SectionKey = 'identity' | 'workspace' | 'engine' | 'briefing';
+type SectionKey = 'identity' | 'workspace' | 'engine' | 'briefing' | 'position';
 const SECTIONS: { key: SectionKey; labelKey: string; hintKey: string }[] = [
   { key: 'identity',  labelKey: 'addAgent.sections.identity.label',  hintKey: 'addAgent.sections.identity.hint' },
   { key: 'workspace', labelKey: 'addAgent.sections.workspace.label', hintKey: 'addAgent.sections.workspace.hint' },
   { key: 'engine',    labelKey: 'addAgent.sections.engine.label',    hintKey: 'addAgent.sections.engine.hint' },
-  { key: 'briefing',  labelKey: 'addAgent.sections.briefing.label',  hintKey: 'addAgent.sections.briefing.hint' }
+  { key: 'briefing',  labelKey: 'addAgent.sections.briefing.label',  hintKey: 'addAgent.sections.briefing.hint' },
+  { key: 'position',  labelKey: 'position.section',                  hintKey: 'position.sectionHint' }
 ];
 
 function basename(path: string): string {
@@ -233,6 +236,10 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
   };
   const preset = providerPreset(provider);
   const [goal, setGoal] = useState(pendingHire?.goal ?? '');
+  /** Where the new agent sits in the company. Employees without a team report
+   *  straight to the director. */
+  const [rank, setRank] = useState<'deputy' | 'employee'>('employee');
+  const [team, setTeam] = useState('');
   const [isolate, setIsolate] = useState(pendingHire?.isolate ?? false);
   // #2 — optional Claude session id to continue. When set, the spawn seeds that
   // session's transcript into the cwd's project dir and launches `--resume`.
@@ -423,7 +430,9 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
         cwd,
         role: description.trim() || undefined,
         // A hire manifest may carry validated capability tags (routing hints).
-        capabilities: hireMeta?.capabilities
+        capabilities: hireMeta?.capabilities,
+        rank,
+        team: cleanTeam(team)
       }
     });
     if (!spawnRes.ok) {
@@ -458,6 +467,8 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
       tmuxTarget: '',
       cwd: spawnedCwd,
       goal: goal.trim() || undefined,
+      rank,
+      team: cleanTeam(team),
       status: 'idle',
       action: resuming && spawnRes.resumeNotFound ? 'session not found — fresh start' : 'starting up',
       progress: 0,
@@ -1014,6 +1025,16 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                       />
                     </Row>
                   </>
+                )}
+
+                {section === 'position' && (
+                  <PositionFields
+                    rank={rank}
+                    team={team}
+                    accent={accent}
+                    onRank={setRank}
+                    onTeam={setTeam}
+                  />
                 )}
 
                 {section === 'briefing' && (

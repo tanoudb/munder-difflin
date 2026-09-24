@@ -1301,7 +1301,9 @@ function writeFleetSnapshot(): void {
           lastTool: spans.length ? spans[spans.length - 1].tool : null,
           lastActiveSecAgo: u ? Math.round((now - u.ts) / 1000) : null,
           inboxBacklog: hive.inboxBacklog(id),
-          onHold: !!a.onHold
+          onHold: !!a.onHold,
+          // Position in the company, for the roster god and the deputies read.
+          ...(a.isGod ? {} : { rank: a.rank ?? 'employee', team: a.team ?? '' })
         };
       });
     hive.writeFleetSnapshot({ ts: now, agents });
@@ -2762,6 +2764,8 @@ async function spawnAgentCore(opts: AgentSpawnOptions, owner: Electron.WebConten
           // Windows floor. Empty when the KG is off (the line isn't emitted then).
           kgCliPath: knowledge.env().KG_CLI,
           theme: readConfig().terminalTheme ?? 'light',
+          // Settings → Company: who the human is, for the chain-of-command block.
+          company: readConfig().company,
           // W3 — default-MCP consent state + the bundled skills source dir.
           mcpDefaults: readConfig().mcpDefaults,
           skillsDir: skillsResourceDir(),

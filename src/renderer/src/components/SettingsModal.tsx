@@ -25,6 +25,7 @@ import { REALTIME_MODEL } from '@shared/realtimePricing';
 import { RealtimeDevicePicker } from '@/realtime/DevicePicker';
 import { CostHud } from '@/realtime/CostHud';
 import { REALTIME_VOICE } from '@shared/features';
+import { DEFAULT_CEO_TITLE, DEFAULT_TITLES, resolveCompany, type CompanyConfig, type CompanyTitles } from '@shared/company';
 import {
   isArabicTerminalEnabled,
   isArabicTerminalFollowingLanguage,
@@ -180,12 +181,13 @@ const sectionHeadFlush = { ...sectionHead, marginBottom: 0 } as const;
 /** The 2px rule between Settings sections. */
 const sectionRule = { height: 2, background: 'var(--cth-ink-300)' } as const;
 
-export type Section = 'General' | 'Prerequisites' | 'Agents & Models' | 'Autonomy & Budgets' | 'Connections' | 'Voice' | 'Memory & Knowledge';
-const NAV_SECTIONS: Section[] = ['General', 'Prerequisites', 'Agents & Models', 'Autonomy & Budgets', 'Connections', 'Voice', 'Memory & Knowledge'];
+export type Section = 'General' | 'Company' | 'Prerequisites' | 'Agents & Models' | 'Autonomy & Budgets' | 'Connections' | 'Voice' | 'Memory & Knowledge';
+const NAV_SECTIONS: Section[] = ['General', 'Company', 'Prerequisites', 'Agents & Models', 'Autonomy & Budgets', 'Connections', 'Voice', 'Memory & Knowledge'];
 /** i18n key for each nav section's label — the Section values themselves stay
  *  as stable identifiers (tab state, deep links). */
 const NAV_SECTION_KEYS: Record<Section, string> = {
   'General': 'settings.nav.general',
+  'Company': 'settings.nav.company',
   'Prerequisites': 'settings.nav.prerequisites',
   'Agents & Models': 'settings.nav.agentsModels',
   'Autonomy & Budgets': 'settings.nav.autonomyBudgets',
@@ -256,6 +258,16 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
   const dirty = Object.keys(pending).length > 0 || autoCompactPending !== null;
   const stage = (patch: Partial<HarnessConfig>): void =>
     setPending((prev) => ({ ...prev, ...patch }));
+
+  /** Settings → Company. Blank fields mean "use the default", which the
+   *  placeholders show; the whole object is staged on every edit. */
+  const [companyDraft, setCompanyDraft] = useState<CompanyConfig>(config.company ?? {});
+  const editCompany = (patch: Omit<CompanyConfig, 'titles'> & { titles?: Partial<CompanyTitles> }): void => {
+    const next: CompanyConfig = { ...companyDraft, ...patch, titles: { ...companyDraft.titles, ...patch.titles } };
+    setCompanyDraft(next);
+    stage({ company: next });
+  };
+  const companyPreview = resolveCompany(companyDraft);
 
   const [keepAwake, setKeepAwake] = useState<boolean>(cfgX.strongKeepalive === true);
   const toggleKeepAwake = async () => {
@@ -365,6 +377,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
         );
       }
       await window.cth.updateConfig(patch);
+      if (patch.company) useStore.getState().setCompany(patch.company);
       setPending({});
       setAutoCompactPending(null);
       setSaveNote(t('settings.saved'));
@@ -1358,6 +1371,74 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                             </PixelButton>
                           </div>
                         </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* COMPANY — who the human is, and what each position is called */}
+                  {activeSection === 'Company' && (
+                    <>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={sectionHeadTight}>{t('settings.company.you')}</div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.youDesc')}
+                        </span>
+                        <div style={{ display: 'flex', gap: 16 }}>
+                          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                            <span style={slackLabelStyle}>{t('settings.company.ceoName')}</span>
+                            <input
+                              value={companyDraft.ceoName ?? ''}
+                              onChange={(e) => editCompany({ ceoName: e.target.value })}
+                              placeholder={t('settings.company.ceoNamePlaceholder')}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                            <span style={slackLabelStyle}>{t('settings.company.ceoTitle')}</span>
+                            <input
+                              value={companyDraft.ceoTitle ?? ''}
+                              onChange={(e) => editCompany({ ceoTitle: e.target.value })}
+                              placeholder={DEFAULT_CEO_TITLE}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div style={sectionRule} />
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={sectionHeadTight}>{t('settings.company.positions')}</div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.positionsDesc')}
+                        </span>
+                        {(['director', 'deputy', 'employee'] as const).map((key) => (
+                          <label key={key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <span style={slackLabelStyle}>{t(`settings.company.${key}`, { godName })}</span>
+                            <input
+                              value={companyDraft.titles?.[key] ?? ''}
+                              onChange={(e) => editCompany({ titles: { [key]: e.target.value } })}
+                              placeholder={DEFAULT_TITLES[key]}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                        ))}
+                        <div style={{
+                          padding: '8px 10px', fontSize: 12, lineHeight: '18px', color: 'var(--cth-ink-900)',
+                          background: 'var(--cth-cream-100)', boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)'
+                        }}>
+                          <span style={{ color: 'var(--cth-ink-500)' }}>{t('settings.company.chain')} </span>
+                          <b>{companyPreview.ceoName ? `${companyPreview.ceoName} (${companyPreview.ceoTitle})` : companyPreview.ceoTitle}</b>
+                          {' → '}{companyPreview.titles.director} ({godName})
+                          {' → '}{companyPreview.titles.deputy}
+                          {' → '}{companyPreview.titles.employee}
+                        </div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.restartNote')}
+                        </span>
                       </div>
                     </>
                   )}

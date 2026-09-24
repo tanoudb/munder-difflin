@@ -82,7 +82,6 @@
     "steerAria": "Envoyer une note à cet agent"
   },
   "agentCard": {
-    "boss": "PATRON",
     "contextTitle": "Contexte : {{used}} / {{limit}} jetons ({{pct}} %)",
     "contextGaugeTitle": "Jauge de contexte — se remplit dès que l'agent signale une activité",
     "doingTasks": "travaille activement sur {{count}} tâche — cliquer pour ouvrir",
@@ -197,6 +196,7 @@
     "eraseEverything": "tout effacer et redémarrer",
     "nav": {
       "general": "Général",
+      "company": "Entreprise",
       "prerequisites": "Prérequis",
       "agentsModels": "Agents et modèles",
       "autonomyBudgets": "Autonomie et budgets",
@@ -239,6 +239,20 @@
       "arabicTerminal": "Texte arabe / RTL dans les terminaux",
       "arabicTerminalDesc": "Affiche les terminaux avec le moteur de texte du navigateur pour que l'arabe se lie et se lise de droite à gauche (xterm n'a pas de bidi natif). Désactivé, c'est le rendu GPU : plus rapide, mais aveugle au RTL. S'applique aux terminaux ouverts comme aux nouveaux.",
       "arabicTerminalFollowsLanguage": "Suit la langue de l'application. Changez-le ici pour forcer l'un ou l'autre — ce choix est conservé même si vous changez de langue ensuite."
+    },
+    "company": {
+      "you": "Vous",
+      "youDesc": "Chaque agent sait qui vous êtes dès son prochain lancement : vous êtes le patron de tout le plateau, directeur compris. Il s'adresse à vous par votre titre, ou par votre nom si vous en donnez un.",
+      "ceoName": "Votre nom",
+      "ceoNamePlaceholder": "facultatif",
+      "ceoTitle": "Votre titre",
+      "positions": "Les postes",
+      "positionsDesc": "Le nom de chaque poste, sur le plateau et dans les consignes des agents. Laissez un champ vide pour garder le nom par défaut.",
+      "director": "Dirige le plateau ({{godName}})",
+      "deputy": "Dirige une équipe",
+      "employee": "Travaille dans une équipe",
+      "chain": "Chaîne de commandement :",
+      "restartNote": "Les agents déjà lancés prennent un changement en compte à leur prochain redémarrage."
     },
     "agentsModels": {
       "defaultModel": "Modèle d'agent par défaut",
@@ -564,6 +578,26 @@
     "errCommand": "La commande est obligatoire",
     "hireProgress": "recrue {{current}} sur {{total}}",
     "skipHire": "passer cette recrue"
+  },
+  "position": {
+    "section": "Hiérarchie",
+    "sectionHint": "poste · équipe",
+    "rank": "Poste",
+    "team": "Équipe",
+    "teamLed": "Équipe dirigée",
+    "teamPlaceholder": "aucune — rattaché au directeur",
+    "teamLedPlaceholder": "ex. Code, Marketing…",
+    "deputyHint": "« {{deputy}} » : répartit le travail entre les membres de son équipe, le suit et rend compte au directeur.",
+    "employeeHint": "Reçoit ses tâches de son chef d'équipe, du directeur ou directement de vous. Sans équipe, il rend compte directement au directeur.",
+    "directorNote": "{{director}} : dirige tout le plateau et ne rend compte qu'à vous."
+  },
+  "editAgent": {
+    "title": "MODIFIER L'AGENT",
+    "engineHint": "fournisseur · modèle · prochain redémarrage",
+    "currentModel": "{{model}} (actuel)",
+    "engineNote": "Les changements de moteur sont pris en compte au prochain redémarrage. Pour basculer tout de suite une session en cours vers un autre fournisseur ou modèle, utilisez Centre de commande → moniteur.",
+    "positionNote": "Le poste et l'équipe sont pris en compte au prochain redémarrage de l'agent.",
+    "save": "enregistrer"
   },
   "onboarding": {
     "titles": {

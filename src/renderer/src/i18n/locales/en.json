@@ -82,7 +82,6 @@
     "steerAria": "Send this agent a note"
   },
   "agentCard": {
-    "boss": "BOSS",
     "contextTitle": "Context: {{used}} / {{limit}} tokens ({{pct}}%)",
     "contextGaugeTitle": "Context gauge — fills once the agent reports activity",
     "doingTasks": "actively working {{count}} task — click to open",
@@ -197,6 +196,7 @@
     "eraseEverything": "erase everything & restart",
     "nav": {
       "general": "General",
+      "company": "Company",
       "prerequisites": "Prerequisites",
       "agentsModels": "Agents & Models",
       "autonomyBudgets": "Autonomy & Budgets",
@@ -239,6 +239,20 @@
       "arabicTerminal": "Arabic / RTL text in terminals",
       "arabicTerminalDesc": "Renders terminals with the browser's text engine so Arabic joins and reads right-to-left (xterm has no bidi of its own). Off is the GPU renderer: faster, but RTL-blind. Applies to open terminals and new ones alike.",
       "arabicTerminalFollowsLanguage": "Following your app language. Switch it here to override that either way — the choice sticks even if you change language again."
+    },
+    "company": {
+      "you": "You",
+      "youDesc": "Every agent is told who you are from its next launch on: you are the boss of the whole floor, director included. It addresses you by your title, or by your name if you give one.",
+      "ceoName": "Your name",
+      "ceoNamePlaceholder": "optional",
+      "ceoTitle": "Your title",
+      "positions": "Positions",
+      "positionsDesc": "What each position is called, on the floor and in what the agents are told. Leave a field blank to keep the default.",
+      "director": "Runs the floor ({{godName}})",
+      "deputy": "Leads a team",
+      "employee": "Works in a team",
+      "chain": "Chain of command:",
+      "restartNote": "Agents already running learn about a change at their next restart."
     },
     "agentsModels": {
       "defaultModel": "Default agent model",
@@ -564,6 +578,26 @@
     "errCommand": "Command is required",
     "hireProgress": "hire {{current}} of {{total}}",
     "skipHire": "skip hire"
+  },
+  "position": {
+    "section": "Hierarchy",
+    "sectionHint": "position · team",
+    "rank": "Position",
+    "team": "Team",
+    "teamLed": "Team it leads",
+    "teamPlaceholder": "none — reports to the director",
+    "teamLedPlaceholder": "e.g. Code, Marketing…",
+    "deputyHint": "“{{deputy}}”: breaks the work down for the members of their team, follows it through and reports to the director.",
+    "employeeHint": "Takes tasks from their team lead, from the director or straight from you. Without a team, reports directly to the director.",
+    "directorNote": "{{director}}: runs the whole floor and answers to you alone."
+  },
+  "editAgent": {
+    "title": "EDIT AGENT",
+    "engineHint": "provider · model · next restart",
+    "currentModel": "{{model}} (current)",
+    "engineNote": "Engine changes are saved for the next restart. Use Command Center → Floor to restart a live session onto a new provider/model now.",
+    "positionNote": "Position and team take effect at the agent's next restart.",
+    "save": "save changes"
   },
   "onboarding": {
     "titles": {

@@ -8,6 +8,15 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **You are the PDG, and every agent knows it.** A new Settings → Company tab takes your name and
+  title (PDG by default) and what each position is called: the director (the orchestrator), a
+  deputy director who leads one team, and the employees. Every agent is told, in the system prompt
+  it is spawned with, that you are the chief executive above everyone including the director, and
+  where it sits itself. The director routes team work through each team's deputy; a deputy
+  dispatches to its own team and reports back; an employee knows its team and its lead. Add Agent
+  and Edit Agent get a Hierarchy section (position and team), the director's card says so instead
+  of "boss", and a team shows on its members' cards. The live roster tags who leads which team, and
+  deputies now receive it too. Edit Agent is translated as well.
 - **Build it yourself.** The Release workflow builds the macOS and Windows installers from this
   repository, with no signing secret required: run it by hand to get the installers as
   artifacts, or push a `vX.Y.Z` tag to publish a release. It no longer builds Linux and no longer
