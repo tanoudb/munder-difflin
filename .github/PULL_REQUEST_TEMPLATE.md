@@ -1,9 +1,7 @@
-<!-- Thanks for contributing to Munder Difflin.
+<!-- Thanks for contributing to Open Space.
 
-     Read this line before you go further: a PR without a BEFORE and an AFTER
-     is not reviewable and will not be merged. The `PR evidence` check runs the
-     moment you open this and will tell you if it is missing. Keep the `Before`
-     and `After` headings below exactly as they are — the check reads them. -->
+     Show a BEFORE and an AFTER under the headings below, so the change can be
+     reviewed without checking it out. -->
 
 ## What & why
 
@@ -47,20 +45,6 @@
 
 - OS:
 - Steps:
-
-## Credit (optional)
-
-<!-- Both are optional and neither affects whether this merges.
-
-     Discord gets you the `employee of the month` role when this lands. Join
-     first so we can find you: https://discord.gg/SEDzP5ZPk5
-
-     X is so we can credit you by name when we post about what shipped. Leave it
-     blank if you would rather we did not. -->
-
-Discord:
-
-X:
 
 ## Checklist
 

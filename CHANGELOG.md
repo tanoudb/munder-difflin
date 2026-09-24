@@ -8,6 +8,12 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **Build it yourself.** The Release workflow builds the macOS and Windows installers from this
+  repository, with no signing secret required: run it by hand to get the installers as
+  artifacts, or push a `vX.Y.Z` tag to publish a release. It no longer builds Linux and no longer
+  injects an analytics key. The README, in French, covers installing, the first launch of an
+  unsigned build, and building locally. The original project's community workflows (blog,
+  contributors, contributor role, PR evidence), its FUNDING and CODEOWNERS files are removed.
 - **Open Space.** The app is renamed from Munder Difflin: the product name, the window titles, the
   installers (`Open-Space-<version>-…`), the macOS permission prompts, and the shareable-hire link,
   which is now `openspace://hire?src=…`. Hire manifests keep their `munder-difflin/hire@1` spec tag,
