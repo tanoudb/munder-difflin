@@ -43,6 +43,7 @@ import { preferredAgentRole } from '../shared/agentRole';
 import { mergeTaskLedger } from '../shared/taskLedger';
 import { expandTilde } from './fs';
 import { resolveGodName } from '../shared/godIdentity';
+import { chainOfCommandPrompt, cleanTeam, rankOf, resolveCompany, rosterOrgTag, type CompanyConfig } from '../shared/company';
 
 /** The subset of HarnessConfig the hive consumes for the default-MCP merge.
  *  Kept as a local shape so hive.ts never imports the foundation-owned config
@@ -142,6 +143,11 @@ export interface AgentMeta {
   /** Michael's prep assistant — enriches prompts and forwards them to Michael.
    *  Send-only: excluded from broadcast fan-out so it never drains an inbox. */
   isAssistant?: boolean;
+  /** Where the agent sits in the company (shared/company.ts). The orchestrator
+   *  is the director and carries neither field. */
+  rank?: 'deputy' | 'employee';
+  /** The team a deputy leads, or an employee belongs to. '' = no team. */
+  team?: string;
 }
 
 export interface RegistryAgent extends AgentMeta {
@@ -684,6 +690,9 @@ export class HiveManager {
        *  old env-var spelling. */
       kgCliPath?: string;
       theme?: 'light' | 'dark';
+      /** Settings → Company: the human's name and title, and the position
+       *  titles, quoted to the agent in its chain-of-command block. */
+      company?: CompanyConfig;
       /** Consent state for the default-MCP bundle (W3). Threaded from the live
        *  HarnessConfig by the caller; undefined → catalog defaults apply. */
       mcpDefaults?: { [id: string]: { enabled: boolean } };
@@ -809,7 +818,7 @@ export class HiveManager {
     if (!isHiveAwareProvider(meta.provider)) {
       const preset = providerPreset(meta.provider ?? 'claude');
       const flag = preset.initialPromptFlag;
-      const prompt = this.injectedPrompt(meta, dir, root, opts.semanticMemory ?? false, opts.knowledgeGraph ?? false, opts.kgCliPath);
+      const prompt = this.injectedPrompt(meta, dir, root, opts.semanticMemory ?? false, opts.knowledgeGraph ?? false, opts.kgCliPath, opts.company);
       // agy, codex, and grok expose a Claude-style lifecycle-hook surface, so each
       // gets the SAME live status + Stop→inbox-drain Claude does — selected by the
       // preset's `hookBridge`. agy needs a translating shim (its hook stdin/stdout
@@ -953,7 +962,7 @@ export class HiveManager {
     const args: string[] = [];
     if (!claudeProvider) return { args, env };
 
-    args.push('--append-system-prompt', this.injectedPrompt(meta, dir, root, opts.semanticMemory ?? false, opts.knowledgeGraph ?? false, opts.kgCliPath));
+    args.push('--append-system-prompt', this.injectedPrompt(meta, dir, root, opts.semanticMemory ?? false, opts.knowledgeGraph ?? false, opts.kgCliPath, opts.company));
 
     // Phase 1 — autonomy: attach lifecycle hooks via --settings (no edits to the
     // user's repo) so the agent reports activity and drains its inbox on Stop.
@@ -1398,6 +1407,7 @@ export class HiveManager {
       `# ${meta.name} (${meta.id})`,
       '',
       `- Role: ${meta.role ?? (meta.isGod ? 'orchestrator (god)' : 'agent')}`,
+      `- Position: ${meta.isGod ? 'director' : rosterOrgTag(meta) || 'employee, reporting to the director'}`,
       `- Capabilities: ${caps}`,
       `- Working directory: ${meta.cwd}`,
       meta.isGod ? '- You are the **god / orchestrator**. You run the floor — keep awareness of the whole team, delegate execution, and personally own only the important calls (decomposition, sign-offs, conflicts, integration), not the grunt work.' : '',
@@ -1434,7 +1444,8 @@ export class HiveManager {
     root: string,
     semanticMemory: boolean,
     knowledgeGraph: boolean,
-    kgCliPath?: string
+    kgCliPath?: string,
+    company?: CompanyConfig
   ): string {
     // Native-separator path helpers — see the 🪟 note above.
     const inDir = (...parts: string[]): string => join(dir, ...parts);
@@ -1447,6 +1458,28 @@ export class HiveManager {
     const godNameForPrompt = godRegistry
       ? resolveGodName(godRegistry.agents[godRegistry.godId ?? 'god']?.name)
       : '';
+    // Chain of command — the human is the chief executive, and every agent knows
+    // its own position. Only spawn-stable values go in: the human's name and
+    // titles, this agent's own rank and team, the director's name, and the name
+    // of the deputy leading this agent's team as of this spawn. Who is in which
+    // team right now travels on the live roster instead.
+    const orgRegistry = this.registry();
+    const orgRank = rankOf(meta);
+    const orgTeam = cleanTeam(meta.team);
+    const directorName = meta.isGod
+      ? meta.name
+      : resolveGodName(orgRegistry.agents[orgRegistry.godId ?? 'god']?.name);
+    const teamLeadName = orgRank === 'employee' && orgTeam
+      ? Object.values(orgRegistry.agents).find((a) =>
+        a.id !== meta.id && !a.archived && rankOf(a) === 'deputy' && cleanTeam(a.team) === orgTeam)?.name
+      : undefined;
+    const chainLine = chainOfCommandPrompt({
+      company: resolveCompany(company),
+      rank: orgRank,
+      team: orgTeam,
+      directorName,
+      teamLeadName
+    });
     const ctxLine = 'LIVE CONTEXT: each agent row in the LIVE ROSTER carries a `ctx NN%` tag — its live context-window occupancy. Treat it as the real headroom signal when routing: prefer an agent with a LOW `ctx` for a big task; treat a HIGH `ctx` (near 100%) as busy rather than idle, even if the cumulative token count looks modest.';
 
     const memoryLine = semanticMemory
@@ -1470,7 +1503,7 @@ export class HiveManager {
     // us) was invisible to every investigation.
     const rt = this.runtimeInfo();
     const runtimeLine = rt
-      ? `RUNNING BUILD: Munder Difflin v${rt.version}, ${rt.packaged ? 'packaged app' : 'local dev build'}${rt.appPath ? `, from ${rt.appPath}` : ''}. Say this version if asked which one is running, and do not assume behaviour from an older one. A local dev build inherits the launching shell's environment (umask included) where a packaged app does not, so file modes and inherited env can legitimately differ between the two. \`log.jsonl\` records an \`app-start\` event on every launch, which is how you spot a restart or a build switch.`
+      ? `RUNNING BUILD: Open Space v${rt.version}, ${rt.packaged ? 'packaged app' : 'local dev build'}${rt.appPath ? `, from ${rt.appPath}` : ''}. Say this version if asked which one is running, and do not assume behaviour from an older one. A local dev build inherits the launching shell's environment (umask included) where a packaged app does not, so file modes and inherited env can legitimately differ between the two. \`log.jsonl\` records an \`app-start\` event on every launch, which is how you spot a restart or a build switch.`
       : '';
     // Item 11: god could not find the spawn queue. The mechanism has worked since
     // v0.4.4, but nothing told him it existed — the prompt said "spawn" without
@@ -1496,6 +1529,7 @@ export class HiveManager {
     return [
       `You are "${meta.name}" (${meta.id}), an autonomous agent in a collaborating hive of Claude agents.`,
       `Your private workspace is ${dir}. The shared hive is ${root}. Full protocol: ${inRoot('PROTOCOL.md')}.`,
+      chainLine,
       '',
       'HIVE PROTOCOL — follow it every task:',
       `1. At the START of a task, read ${inDir('memory.md')} and EVERY file in ${inDir('inbox')} (messages other agents sent you). After handling an inbox message, move its file into ${inDir('inbox', '.done')}.`,
@@ -2422,6 +2456,16 @@ export class HiveManager {
   }
 
   /** Is this agent the hive's god/orchestrator? */
+  /** True when this agent is a deputy director (a team lead). */
+  isDeputy(agentId: string): boolean {
+    try {
+      const a = this.registry().agents[agentId];
+      return !!a && !a.archived && rankOf(a) === 'deputy';
+    } catch {
+      return false;
+    }
+  }
+
   isGod(agentId: string): boolean {
     try {
       const reg = this.registry();
@@ -2453,7 +2497,10 @@ export class HiveManager {
    * so the hook stays a no-op rather than injecting noise.
    */
   rosterContext(
-    ctxOf?: (agentId: string) => { tokens: number; limit: number } | undefined
+    ctxOf?: (agentId: string) => { tokens: number; limit: number } | undefined,
+    /** The agent the roster is injected into, marked `you` on its own row.
+     *  Defaults to god, the reader the roster was first written for. */
+    readerId?: string
   ): string | null {
     const root = this.root();
     if (!root) return null;
@@ -2465,7 +2512,7 @@ export class HiveManager {
           id: string; name?: string; role?: string; isGod?: boolean;
           breaker?: string; tokens?: number; usd?: number;
           lastTool?: string | null; lastActiveSecAgo?: number | null; inboxBacklog?: number;
-          onHold?: boolean;
+          onHold?: boolean; rank?: string; team?: string;
         }>;
       };
       const agents = Array.isArray(snap.agents) ? snap.agents : [];
@@ -2484,13 +2531,16 @@ export class HiveManager {
       let anyCtx = false;
       let anyHold = false;
       const rows = shown.map((a) => {
-        const bits = [a.role ?? 'agent',
-          typeof a.lastActiveSecAgo === 'number' ? `active ${ago(a.lastActiveSecAgo)}` : 'no activity yet'];
+        const bits = [a.role ?? 'agent'];
+        // Position in the company: who leads which team, and who is in it.
+        const org = a.isGod ? 'director' : rosterOrgTag(a);
+        if (org) bits.push(org);
+        bits.push(typeof a.lastActiveSecAgo === 'number' ? `active ${ago(a.lastActiveSecAgo)}` : 'no activity yet');
         if (a.tokens) bits.push(`${Math.round(a.tokens / 1000)}k tok`);
         if (a.usd) bits.push(`$${a.usd.toFixed(2)}`);
         if (a.inboxBacklog) bits.push(`inbox ${a.inboxBacklog}`);
         if (a.breaker && a.breaker !== 'ok' && a.breaker !== 'none') bits.push(`breaker ${a.breaker}`);
-        if (a.isGod) bits.push('you');
+        if (readerId ? a.id === readerId : a.isGod) bits.push('you');
         // First in the row after the role would be louder, but this reads in
         // the same scan as `breaker` and `inbox`, and god already treats those
         // as routing signals.

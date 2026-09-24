@@ -2,6 +2,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { useStore, type Agent } from '@/store/store';
 import { buildSpawnCommand, inferAgentProvider, tokenizeCommand, type HarnessConfig } from '@/store/config';
 import { roleForHiveSpawn } from '@shared/agentRole';
+import { orgForSpawn } from '@shared/company';
 
 /** "Restore team" — respawn every worker from the previous session.
  *
@@ -147,7 +148,7 @@ export function useRestoreTeam(config?: HarnessConfig | null): RestoreTeamState 
             // agent id is preserved across restart, so its registry entry,
             // memory.md and inbox reattach by id. No-op without a recorded session.
             resume: true,
-            hive: { id: a.id, name: a.name, provider, cwd, role: roleForHiveSpawn(a) }
+            hive: { id: a.id, name: a.name, provider, cwd, role: roleForHiveSpawn(a), ...orgForSpawn(a) }
           });
           if (res.ok) {
             restored++;

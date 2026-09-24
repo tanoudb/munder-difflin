@@ -24,6 +24,8 @@ import { AiEnginesSettings } from './AiEnginesSettings';
 import { REALTIME_MODEL } from '@shared/realtimePricing';
 import { RealtimeDevicePicker } from '@/realtime/DevicePicker';
 import { CostHud } from '@/realtime/CostHud';
+import { REALTIME_VOICE } from '@shared/features';
+import { DEFAULT_CEO_TITLE, DEFAULT_TITLES, resolveCompany, type CompanyConfig, type CompanyTitles } from '@shared/company';
 import {
   isArabicTerminalEnabled,
   isArabicTerminalFollowingLanguage,
@@ -90,10 +92,10 @@ const slackLabelStyle: CSSProperties = {
 /** The exact connect walkthrough shown behind the i icon. Steps 6 & 7 spell out
  *  the both-lists requirement: subscribe to message.channels / message.groups in
  *  BOTH "Subscribe to bot events" AND "Subscribe to events on behalf of users". */
-const SLACK_CONNECT_STEPS = `Connect Munder Difflin to Slack
+const SLACK_CONNECT_STEPS = `Connect Open Space to Slack
 
 1. api.slack.com/apps -> Create New App -> From scratch. Name it
-   "Munder Difflin" and pick your workspace.
+   "Open Space" and pick your workspace.
 2. Basic Information -> Signing Secret -> copy it into the
    "Signing secret" field here.
 3. OAuth & Permissions -> Bot Token Scopes: add
@@ -115,7 +117,7 @@ const SLACK_CONNECT_STEPS = `Connect Munder Difflin to Slack
      message.channels
      message.groups
 8. Save Changes, reinstall if Slack prompts, then invite the bot
-   to your channel:  /invite @MunderDifflin`;
+   to your channel:  /invite @OpenSpace`;
 
 /** The request/response contract shown behind the webhook i icon. Every webhook
  *  shares one server and one tunnel and is told apart by its id in the path, so
@@ -179,12 +181,13 @@ const sectionHeadFlush = { ...sectionHead, marginBottom: 0 } as const;
 /** The 2px rule between Settings sections. */
 const sectionRule = { height: 2, background: 'var(--cth-ink-300)' } as const;
 
-export type Section = 'General' | 'Prerequisites' | 'Agents & Models' | 'Autonomy & Budgets' | 'Connections' | 'Voice' | 'Memory & Knowledge';
-const NAV_SECTIONS: Section[] = ['General', 'Prerequisites', 'Agents & Models', 'Autonomy & Budgets', 'Connections', 'Voice', 'Memory & Knowledge'];
+export type Section = 'General' | 'Company' | 'Prerequisites' | 'Agents & Models' | 'Autonomy & Budgets' | 'Connections' | 'Voice' | 'Memory & Knowledge';
+const NAV_SECTIONS: Section[] = ['General', 'Company', 'Prerequisites', 'Agents & Models', 'Autonomy & Budgets', 'Connections', 'Voice', 'Memory & Knowledge'];
 /** i18n key for each nav section's label — the Section values themselves stay
  *  as stable identifiers (tab state, deep links). */
 const NAV_SECTION_KEYS: Record<Section, string> = {
   'General': 'settings.nav.general',
+  'Company': 'settings.nav.company',
   'Prerequisites': 'settings.nav.prerequisites',
   'Agents & Models': 'settings.nav.agentsModels',
   'Autonomy & Budgets': 'settings.nav.autonomyBudgets',
@@ -255,6 +258,16 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
   const dirty = Object.keys(pending).length > 0 || autoCompactPending !== null;
   const stage = (patch: Partial<HarnessConfig>): void =>
     setPending((prev) => ({ ...prev, ...patch }));
+
+  /** Settings → Company. Blank fields mean "use the default", which the
+   *  placeholders show; the whole object is staged on every edit. */
+  const [companyDraft, setCompanyDraft] = useState<CompanyConfig>(config.company ?? {});
+  const editCompany = (patch: Omit<CompanyConfig, 'titles'> & { titles?: Partial<CompanyTitles> }): void => {
+    const next: CompanyConfig = { ...companyDraft, ...patch, titles: { ...companyDraft.titles, ...patch.titles } };
+    setCompanyDraft(next);
+    stage({ company: next });
+  };
+  const companyPreview = resolveCompany(companyDraft);
 
   const [keepAwake, setKeepAwake] = useState<boolean>(cfgX.strongKeepalive === true);
   const toggleKeepAwake = async () => {
@@ -364,6 +377,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
         );
       }
       await window.cth.updateConfig(patch);
+      if (patch.company) useStore.getState().setCompany(patch.company);
       setPending({});
       setAutoCompactPending(null);
       setSaveNote(t('settings.saved'));
@@ -974,10 +988,8 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                   {/* GENERAL */}
                   {activeSection === 'General' && (
                     <>
-                      {/* Who you are and what this install is — version, plan,
-                          sponsor, and the app-level actions that belong to none
-                          of the settings below. Slots for a future subscription
-                          and a sponsor live here; both render nothing until set. */}
+                      {/* What this install is — its version, and the app-level
+                          actions that belong to none of the settings below. */}
                       <SettingsHeroCard />
 
                       <div style={{ height: 1, background: 'var(--cth-ink-300)' }} />
@@ -1359,6 +1371,74 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                             </PixelButton>
                           </div>
                         </div>
+                      </div>
+                    </>
+                  )}
+
+                  {/* COMPANY — who the human is, and what each position is called */}
+                  {activeSection === 'Company' && (
+                    <>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={sectionHeadTight}>{t('settings.company.you')}</div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.youDesc')}
+                        </span>
+                        <div style={{ display: 'flex', gap: 16 }}>
+                          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                            <span style={slackLabelStyle}>{t('settings.company.ceoName')}</span>
+                            <input
+                              value={companyDraft.ceoName ?? ''}
+                              onChange={(e) => editCompany({ ceoName: e.target.value })}
+                              placeholder={t('settings.company.ceoNamePlaceholder')}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                          <label style={{ display: 'flex', flexDirection: 'column', gap: 4, flex: 1 }}>
+                            <span style={slackLabelStyle}>{t('settings.company.ceoTitle')}</span>
+                            <input
+                              value={companyDraft.ceoTitle ?? ''}
+                              onChange={(e) => editCompany({ ceoTitle: e.target.value })}
+                              placeholder={DEFAULT_CEO_TITLE}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div style={sectionRule} />
+
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                        <div style={sectionHeadTight}>{t('settings.company.positions')}</div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.positionsDesc')}
+                        </span>
+                        {(['director', 'deputy', 'employee'] as const).map((key) => (
+                          <label key={key} style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+                            <span style={slackLabelStyle}>{t(`settings.company.${key}`, { godName })}</span>
+                            <input
+                              value={companyDraft.titles?.[key] ?? ''}
+                              onChange={(e) => editCompany({ titles: { [key]: e.target.value } })}
+                              placeholder={DEFAULT_TITLES[key]}
+                              maxLength={60}
+                              style={slackInputStyle}
+                            />
+                          </label>
+                        ))}
+                        <div style={{
+                          padding: '8px 10px', fontSize: 12, lineHeight: '18px', color: 'var(--cth-ink-900)',
+                          background: 'var(--cth-cream-100)', boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)'
+                        }}>
+                          <span style={{ color: 'var(--cth-ink-500)' }}>{t('settings.company.chain')} </span>
+                          <b>{companyPreview.ceoName ? `${companyPreview.ceoName} (${companyPreview.ceoTitle})` : companyPreview.ceoTitle}</b>
+                          {' → '}{companyPreview.titles.director} ({godName})
+                          {' → '}{companyPreview.titles.deputy}
+                          {' → '}{companyPreview.titles.employee}
+                        </div>
+                        <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
+                          {t('settings.company.restartNote')}
+                        </span>
                       </div>
                     </>
                   )}
@@ -1970,9 +2050,11 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                         )}
                       </div>
 
-                      <div style={sectionRule} />
+                      {REALTIME_VOICE && <div style={sectionRule} />}
 
-                      {/* Realtime Michael — voice device selection (rt-8) */}
+                      {/* Realtime Michael — voice device selection (rt-8). Hidden in
+                          Open Space: it runs on OpenAI's pay-per-use Realtime API. */}
+                      {REALTIME_VOICE && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                         <div style={sectionHeadTight}>
                           {t('settings.voice.realtime')}
@@ -2070,6 +2152,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                           </span>
                         </label>
                       </div>
+                      )}
                     </>
                   )}
 

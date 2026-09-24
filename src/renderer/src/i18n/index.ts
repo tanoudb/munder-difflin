@@ -1,13 +1,13 @@
 /**
  * i18n bootstrap — react-i18next with inline JSON resources.
  *
- * English is the default language (and the fallback for any missing key).
+ * Open Space is French first: French is the default language and English is
+ * the second one. English stays the fallback for any missing key, because
+ * `en.json` is the source every other locale is checked against.
  * The user's choice is persisted in localStorage (`cth.language`). With nothing
- * saved the app starts in English, ALWAYS — it deliberately does not read
- * navigator.language. Auto-detect would change the UI out from under every
- * existing user on a non-English machine, who never asked for a translation and
- * may not want a partial one. Nothing moves until someone picks a language in
- * Settings.
+ * saved the app starts in French, ALWAYS — it deliberately does not read
+ * navigator.language, so the UI never changes under someone because of their
+ * OS settings. Nothing moves until someone picks a language in Settings.
  *
  * Adding a language: drop a `locales/<code>.json` with the exact same key
  * tree as `en.json`, register it in `resources` and `supportedLngs`, and add
@@ -19,8 +19,9 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { DEFAULT_GOD_NAME } from '@shared/godIdentity';
 import en from './locales/en.json';
-import zhCN from './locales/zh-CN.json';
-import ar from './locales/ar.json';
+import fr from './locales/fr.json';
+
+interface Language { code: string; label: string; dir: 'ltr' | 'rtl' }
 
 /**
  * The languages the Settings picker offers, in display order.
@@ -33,17 +34,16 @@ import ar from './locales/ar.json';
  * the renderer takes the same path it took before Arabic existed.
  */
 export const LANGUAGES = [
-  { code: 'en', label: 'English', dir: 'ltr' },
-  { code: 'zh-CN', label: '简体中文', dir: 'ltr' },
-  { code: 'ar', label: 'العربية', dir: 'rtl' }
-] as const;
+  { code: 'fr', label: 'Français', dir: 'ltr' },
+  { code: 'en', label: 'English', dir: 'ltr' }
+] as const satisfies readonly Language[];
 
 export type LanguageCode = (typeof LANGUAGES)[number]['code'];
 
 /** Language codes that read right-to-left, derived from LANGUAGES itself so a
  *  new locale cannot be registered with a direction and then forgotten here. */
 const RTL_CODES: ReadonlySet<string> = new Set(
-  LANGUAGES.filter((l) => l.dir === 'rtl').map((l) => l.code)
+  LANGUAGES.filter((l: Language) => l.dir === 'rtl').map((l) => l.code)
 );
 
 /**
@@ -89,13 +89,13 @@ export function setGodName(name: string | undefined | null): void {
   i18n.emit('languageChanged', i18n.language);
 }
 
-/** The saved choice, or English. Never the OS locale — see the note above. */
+/** The saved choice, or French. Never the OS locale — see the note above. */
 function detectLanguage(): string {
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved && SUPPORTED.includes(saved as LanguageCode)) return saved;
-  } catch { /* localStorage unavailable — English it is */ }
-  return 'en';
+  } catch { /* localStorage unavailable — French it is */ }
+  return 'fr';
 }
 
 /** Switch language now and persist the choice for next launch. */
@@ -108,13 +108,12 @@ void i18n
   .use(initReactI18next)
   .init({
     resources: {
-      en: { translation: en },
-      'zh-CN': { translation: zhCN },
-      ar: { translation: ar }
+      fr: { translation: fr },
+      en: { translation: en }
     },
     lng: detectLanguage(),
     fallbackLng: 'en',
-    supportedLngs: ['en', 'zh-CN', 'ar'],
+    supportedLngs: ['fr', 'en'],
     // Resources are bundled inline, so nothing ever suspends — the string is
     // there at init time. Keeping this false lets every component call
     // useTranslation() without wrapping the tree in <Suspense>.

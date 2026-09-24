@@ -1,8 +1,10 @@
 name: Release
 
-# Build installers for every platform and publish them to a GitHub Release
-# whenever a v* tag is pushed. Run manually (workflow_dispatch) to dry-build
-# without publishing.
+# Build the Open Space installers (macOS and Windows) and publish them to a
+# GitHub Release whenever a v* tag is pushed. Run manually (workflow_dispatch)
+# to build them without publishing: the installers are then attached to the
+# run as downloadable artifacts. No signing secret is required; without one the
+# installers are unsigned (see README).
 on:
   push:
     tags:
@@ -24,8 +26,6 @@ jobs:
             args: --mac
           - os: windows-2022
             args: --win
-          - os: ubuntu-latest
-            args: --linux
     steps:
       - uses: actions/checkout@v4
 
@@ -48,13 +48,9 @@ jobs:
         run: npm ci
 
       - name: Compile (electron-vite → out/)
+        # No POSTHOG_KEY: Open Space builds compile analytics with an empty key,
+        # so the app sends no usage events at all.
         run: npm run build
-        env:
-          # Anonymous product analytics (TELEMETRY.md). The PostHog project key
-          # is public/write-only, but only official release builds inject it —
-          # forks without the secret compile with '' and analytics no-ops.
-          POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
-          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
 
       - name: Package installers
         # GH_TOKEN lets electron-builder skip its own publish; we upload via the

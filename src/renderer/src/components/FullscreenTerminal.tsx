@@ -14,6 +14,7 @@ import { SpritePortrait } from './SpritePortrait';
 import { PORTRAIT_W } from '@/scene/office/portraitArt';
 import { RealtimeMichaelToggle } from './RealtimeMichaelToggle';
 import { CostHud } from '@/realtime/CostHud';
+import { REALTIME_VOICE } from '@shared/features';
 import { useStore, type Agent } from '@/store/store';
 import { usePtyParser } from '@/hooks/usePtyParser';
 import { useRestoreTeam } from '@/hooks/useRestoreTeam';
@@ -308,7 +309,7 @@ export function FullscreenTerminal({ config }: FullscreenTerminalProps) {
         <span style={{
           fontFamily: 'var(--cth-font-display)', fontSize: 12, lineHeight: '20px',
           color: 'var(--cth-ink-900)'
-        }}>MUNDER DIFFLIN · FOCUS MODE</span>
+        }}>OPEN SPACE · FOCUS MODE</span>
         {/* Same top-right controls as the main title bar — fullscreen covers
             it, so theme / exit-fullscreen / IDE must live here too. */}
         <div className="cth-titlebar-nodrag" style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -1008,8 +1009,8 @@ function Header({ agent, onEdit }: { agent: Agent; onEdit: () => void }) {
             god orchestrator) globally, not the agent in view, so users can start a
             voice session even while a worker's terminal fills the screen. The cost
             HUD stays Michael-only (it belongs to his card). */}
-        <RealtimeMichaelToggle />
-        {agent.isGod && <CostHud compact />}
+        {REALTIME_VOICE && <RealtimeMichaelToggle />}
+        {REALTIME_VOICE && agent.isGod && <CostHud compact />}
         <PixelButton variant="secondary" size="sm" onClick={openTerminal} disabled={openState === 'opening'}>
           <span
             className="cth-tip cth-tip-wrap"

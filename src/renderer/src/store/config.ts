@@ -14,6 +14,7 @@ import type {
   WebhookTrigger
 } from '@shared/triggers';
 import { isNewer } from '@shared/updateState';
+import type { CompanyConfig } from '@shared/company';
 import modelCatalog from '@shared/modelCatalog.json';
 import type { CatalogModel, ModelCatalog } from '@shared/modelCatalogPayload';
 
@@ -123,6 +124,8 @@ export interface HarnessConfig {
   knowledgeGraph?: KnowledgeGraphConfig;
   /** TV-show office themes feature flag (Settings picker + switch flow). Default OFF. */
   tvShowOffices?: boolean;
+  /** Settings → Company: the human's name and title, and the position titles. */
+  company?: CompanyConfig;
   /** Active office map/cast theme (honored only when tvShowOffices is on). */
   officeTheme?: 'office' | 'friends' | 'brooklyn99' | 'siliconvalley' | 'got' | 'hogwarts';
   /** Per-CLI-provider local/self-hosted base URL (Ollama/LM Studio/vLLM, …) for the

@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer, webUtils, type IpcRendererEvent } from 'electron';
 import type { AgentProvider } from '../shared/agentProvider';
 import type { HireManifest } from '../shared/hire';
+import type { CompanyConfig } from '../shared/company';
 export type { HireManifest } from '../shared/hire';
 import type { IntegrationRecord, IntegrationTemplate } from '../shared/integrations';
 export type { IntegrationRecord, IntegrationTemplate } from '../shared/integrations';
@@ -56,6 +57,10 @@ export interface HiveAgentMeta {
   isGod?: boolean;
   /** Michael's prep assistant — send-only; enriches prompts and forwards them. */
   isAssistant?: boolean;
+  /** Position in the company (shared/company.ts); the orchestrator carries none. */
+  rank?: 'deputy' | 'employee';
+  /** The team a deputy leads or an employee belongs to; '' = no team. */
+  team?: string;
 }
 
 export interface HiveMessage {
@@ -325,6 +330,8 @@ export interface HarnessConfig {
   tvShowOffices?: boolean;
   /** Active office map/cast theme (honored only when tvShowOffices is on). */
   officeTheme?: 'office' | 'friends' | 'brooklyn99' | 'siliconvalley' | 'got' | 'hogwarts';
+  /** Settings → Company: the human's name and title, and the position titles. */
+  company?: CompanyConfig;
   /** Per-CLI-provider local/self-hosted base URL (Ollama/LM Studio/vLLM, …) for the
    *  OpenCode/Crush/pi/qwen engines; applied at spawn. API KEYS are NOT stored here —
    *  they live write-only in the secret broker. */
@@ -922,7 +929,7 @@ const api = {
   },
 
   // ─── Shareable hires (deep link / file import) ────────────────────────────
-  /** Fired when a validated hire manifest arrives via the munderdifflin://
+  /** Fired when a validated hire manifest arrives via the openspace://
    *  deep link. The renderer opens the Add-Agent modal pre-filled — import
    *  never spawns anything by itself. */
   onHireImport: (cb: (manifest: HireManifest) => void): (() => void) => {

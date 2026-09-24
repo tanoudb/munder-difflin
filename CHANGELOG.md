@@ -8,6 +8,34 @@ All notable changes to this project are documented here. The format is based on
 
 ### Added
 
+- **You are the PDG, and every agent knows it.** A new Settings → Company tab takes your name and
+  title (PDG by default) and what each position is called: the director (the orchestrator), a
+  deputy director who leads one team, and the employees. Every agent is told, in the system prompt
+  it is spawned with, that you are the chief executive above everyone including the director, and
+  where it sits itself. The director routes team work through each team's deputy; a deputy
+  dispatches to its own team and reports back; an employee knows its team and its lead. Add Agent
+  and Edit Agent get a Hierarchy section (position and team), the director's card says so instead
+  of "boss", and a team shows on its members' cards. The live roster tags who leads which team, and
+  deputies now receive it too. Edit Agent is translated as well.
+- **Build it yourself.** The Release workflow builds the macOS and Windows installers from this
+  repository, with no signing secret required: run it by hand to get the installers as
+  artifacts, or push a `vX.Y.Z` tag to publish a release. It no longer builds Linux and no longer
+  injects an analytics key. The README, in French, covers installing, the first launch of an
+  unsigned build, and building locally. The original project's community workflows (blog,
+  contributors, contributor role, PR evidence), its FUNDING and CODEOWNERS files are removed.
+- **Open Space.** The app is renamed from Munder Difflin: the product name, the window titles, the
+  installers (`Open-Space-<version>-…`), the macOS permission prompts, and the shareable-hire link,
+  which is now `openspace://hire?src=…`. Hire manifests keep their `munder-difflin/hire@1` spec tag,
+  so hires written for Munder Difflin still import. The app id is `io.github.tanoudb.openspace`, so
+  Open Space keeps its settings apart from a Munder Difflin install on the same machine, and updates
+  are read from this repository's releases.
+- **French first.** The interface is in French by default, with English as the second language in
+  Settings → General → Language; the OS locale is still never read. Every string in the locale
+  files is translated, with its placeholders, markup and array lengths intact, and a test holds
+  that shape. Chinese and Arabic are no longer shipped, so a new string needs two translations, not
+  four; the right-to-left machinery stays in the code, inert. A handful of strings are still
+  hardcoded in components (the engine install badges, the top bar's auto-mode label, the office
+  theme descriptions) and stay English in both languages.
 - **Tasks show their id.** The one thing people actually refer to a card by — `bmt-12` — was not
   displayed anywhere: not on the kanban card, which printed only the title and the assignee, and not
   in the detail view behind it. It now leads the card above the title, and leads the detail view's
@@ -33,6 +61,19 @@ All notable changes to this project are documented here. The format is based on
   not mention keeps the built-in one, so a bad edit costs a list rather than a picker. The payload is
   data and never markup, and a model id is length-capped and stripped of control characters before it
   can reach a `--model` flag on a spawn command line. Same mechanism as the Settings hero card.
+
+### Removed
+
+- **Nothing to buy, nothing to star.** Settings → General no longer carries the Pro announcement,
+  the Founders' Wall offer or the sponsor slot fetched from the original repository. Its card now
+  shows the version, a one-line description, "what's new", "report a problem" and the changelog,
+  all pointing at this repository. The update toast no longer asks for a GitHub star, and the
+  open-models and Mac Mini guides that linked to the original website are gone. The model catalog
+  is read from this repository too, so the app no longer contacts the original project.
+- **No pay-per-use voice.** Talking to the orchestrator in real time ran on OpenAI's Realtime API,
+  billed per use on your own key. Its Talk toggle, cost meter and Settings section are hidden behind
+  `REALTIME_VOICE` in `src/shared/features.ts`; the code stays, so it is one line to bring back.
+  Free Flow dictation (Groq, free tier) is unchanged.
 
 ## [0.4.6] — 2026-08-27
 

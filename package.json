@@ -1,14 +1,14 @@
 {
-  "name": "munder-difflin",
+  "name": "open-space",
   "version": "0.4.6",
   "private": true,
-  "description": "Clones for you and your team, working 24/7 — a free, local-first multi-agent harness that turns the CLI coding agent you already run into a clone of you, coordinating an office of agents on your machine.",
+  "description": "Open Space — votre bureau de clones IA qui travaillent 24 h/24 : un harnais multi-agents local et gratuit qui transforme l'agent CLI que vous utilisez déjà en un clone de vous, qui coordonne un bureau d'agents sur votre machine.",
   "main": "out/main/index.js",
-  "author": "Chaitanya Giri",
-  "homepage": "https://munderdiffl.in/",
+  "author": "tanoudb",
+  "homepage": "https://github.com/tanoudb/munder-difflin",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chaitanyagiri/munder-difflin.git"
+    "url": "https://github.com/tanoudb/munder-difflin.git"
   },
   "scripts": {
     "dev": "electron-vite dev",

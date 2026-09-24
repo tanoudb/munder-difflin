@@ -1,5 +1,7 @@
 import { useEffect, useLayoutEffect, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
+import { PositionFields } from './PositionFields';
+import { cleanTeam } from '@shared/company';
 import { PixelPanel } from './PixelPanel';
 import { PixelButton } from './PixelButton';
 import { SpritePortrait } from './SpritePortrait';
@@ -15,8 +17,7 @@ import {
   OSS_LOCAL_PICKS,
   OSS_PROVIDER_PICKS,
   localSlugFor,
-  hasOssQuickPicks,
-  OSS_BLOG_LINKS
+  hasOssQuickPicks
 } from '@shared/ossModels';
 import {
   type AgentProvider,
@@ -45,7 +46,6 @@ const ossGroupHead: CSSProperties = {
   fontFamily: 'var(--cth-font-display)', fontSize: 8, lineHeight: '12px',
   color: 'var(--cth-ink-500)', textTransform: 'uppercase', marginBottom: 4
 };
-const ossLink: CSSProperties = { color: 'var(--cth-ink-900)', textDecoration: 'underline', cursor: 'pointer' };
 
 // One-click briefing templates — fill Description + Goal with a sharp, ready-to-run
 // role so a user isn't staring at a blank field (item 7). The template BRIEFINGS
@@ -83,7 +83,7 @@ const DESCRIPTION_TEMPLATES: { labelKey: string; description: string; goal: stri
 // the exact JSON shape the importer accepts and ends with a fill-in section so the
 // user adds their own details (item 7). Kept in sync with the HireManifest schema
 // (src/shared/hire.ts) — provider allowlist is claude | codex | antigravity | cursor.
-const HIRE_PROMPT = `You are designing a "hire" — a ready-to-spawn AI agent for Munder Difflin, an app that runs a team of CLI coding agents. Output ONE JSON object (a hire manifest) and nothing else.
+const HIRE_PROMPT = `You are designing a "hire" — a ready-to-spawn AI agent for Open Space, an app that runs a team of CLI coding agents. Output ONE JSON object (a hire manifest) and nothing else.
 
 Make the agent genuinely useful: give it a sharp role, a concrete standing goal, and a description that makes it behave like an expert operator of its CLI engine (Claude Code, Codex, or Antigravity/Gemini). It should know how to use the terminal, read and edit files, run and inspect commands, lean on available skills and MCP tools, keep notes in memory, and work autonomously toward its goal without hand-holding.
 
@@ -118,12 +118,13 @@ Repos, tools, style, or constraints to respect:
 // Command (it's the spawn command assembled from provider+model+flags); Workspace
 // clusters Folder + Git isolation + Resume (all "where/how it runs"). Capabilities
 // isn't a field here — it rides an imported hire manifest (the pinned banner).
-type SectionKey = 'identity' | 'workspace' | 'engine' | 'briefing';
+type SectionKey = 'identity' | 'workspace' | 'engine' | 'briefing' | 'position';
 const SECTIONS: { key: SectionKey; labelKey: string; hintKey: string }[] = [
   { key: 'identity',  labelKey: 'addAgent.sections.identity.label',  hintKey: 'addAgent.sections.identity.hint' },
   { key: 'workspace', labelKey: 'addAgent.sections.workspace.label', hintKey: 'addAgent.sections.workspace.hint' },
   { key: 'engine',    labelKey: 'addAgent.sections.engine.label',    hintKey: 'addAgent.sections.engine.hint' },
-  { key: 'briefing',  labelKey: 'addAgent.sections.briefing.label',  hintKey: 'addAgent.sections.briefing.hint' }
+  { key: 'briefing',  labelKey: 'addAgent.sections.briefing.label',  hintKey: 'addAgent.sections.briefing.hint' },
+  { key: 'position',  labelKey: 'position.section',                  hintKey: 'position.sectionHint' }
 ];
 
 function basename(path: string): string {
@@ -235,6 +236,10 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
   };
   const preset = providerPreset(provider);
   const [goal, setGoal] = useState(pendingHire?.goal ?? '');
+  /** Where the new agent sits in the company. Employees without a team report
+   *  straight to the director. */
+  const [rank, setRank] = useState<'deputy' | 'employee'>('employee');
+  const [team, setTeam] = useState('');
   const [isolate, setIsolate] = useState(pendingHire?.isolate ?? false);
   // #2 — optional Claude session id to continue. When set, the spawn seeds that
   // session's transcript into the cwd's project dir and launches `--resume`.
@@ -425,7 +430,9 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
         cwd,
         role: description.trim() || undefined,
         // A hire manifest may carry validated capability tags (routing hints).
-        capabilities: hireMeta?.capabilities
+        capabilities: hireMeta?.capabilities,
+        rank,
+        team: cleanTeam(team)
       }
     });
     if (!spawnRes.ok) {
@@ -460,6 +467,8 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
       tmuxTarget: '',
       cwd: spawnedCwd,
       goal: goal.trim() || undefined,
+      rank,
+      team: cleanTeam(team),
       status: 'idle',
       action: resuming && spawnRes.resumeNotFound ? 'session not found — fresh start' : 'starting up',
       progress: 0,
@@ -996,18 +1005,6 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     {(provider === 'opencode' || provider === 'crush' || provider === 'pi' || provider === 'qwen') && (
                       <div style={{ fontSize: 12, color: 'var(--cth-ink-500)', lineHeight: '16px', margin: '2px 0 6px' }}>
                         {tr('addAgent.byokNote')}
-                        {' '}
-                        <a
-                          href={OSS_BLOG_LINKS.openModels}
-                          onClick={(e) => { e.preventDefault(); void window.cth.openExternal(OSS_BLOG_LINKS.openModels); }}
-                          style={ossLink}
-                        >{tr('addAgent.runOnOpenModels')}</a>
-                        {' '}
-                        <a
-                          href={OSS_BLOG_LINKS.macMini}
-                          onClick={(e) => { e.preventDefault(); void window.cth.openExternal(OSS_BLOG_LINKS.macMini); }}
-                          style={ossLink}
-                        >{tr('addAgent.setUpMacMini')}</a>.
                       </div>
                     )}
 
@@ -1028,6 +1025,16 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                       />
                     </Row>
                   </>
+                )}
+
+                {section === 'position' && (
+                  <PositionFields
+                    rank={rank}
+                    team={team}
+                    accent={accent}
+                    onRank={setRank}
+                    onTeam={setTeam}
+                  />
                 )}
 
                 {section === 'briefing' && (

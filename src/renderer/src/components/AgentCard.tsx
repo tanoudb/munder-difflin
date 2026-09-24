@@ -6,9 +6,12 @@ import { useHasTerminalDraft } from './terminalPool';
 import { SpritePortrait } from './SpritePortrait';
 import { RealtimeMichaelToggle } from './RealtimeMichaelToggle';
 import { CostHud } from '@/realtime/CostHud';
+import { REALTIME_VOICE } from '@shared/features';
 import { AccentColorName } from '@/design/tokens';
 import { OfficeCharacterName } from '@/scene/office/cast';
 import { AgentNameEditor } from './AgentNameEditor';
+import { useStore } from '@/store/store';
+import { cleanTeam } from '@shared/company';
 
 export interface AgentCardProps {
   name: string;
@@ -28,9 +31,12 @@ export interface AgentCardProps {
   /** Context-window limit (tokens) assumed for the agent's model. */
   contextLimit?: number;
   selected?: boolean;
-  /** Your clone — gets a persistent accent frame + BOSS tag so it stands out.
-   *  (`isGod` / the `god` agent id stay as-is internally; this is display only.) */
+  /** Your clone — gets a persistent accent frame + the director tag so it stands
+   *  out. (`isGod` / the `god` agent id stay as-is internally; display only.) */
   isGod?: boolean;
+  /** Position in the company; a deputy director gets a tag naming its team. */
+  rank?: 'deputy' | 'employee';
+  team?: string;
   onClick?: () => void;
   /** Persists an inline display-name edit; identity and hive paths stay unchanged. */
   onRename?: (name: string) => Promise<{ ok: boolean; error?: string }>;
@@ -56,10 +62,11 @@ const fmtK = (n: number): string => `${Math.round(n / 1000)}k`;
  */
 export function AgentCard({
   name, character, accent, status, ptyId, project, action, progress = 0,
-  contextTokens, contextLimit, selected, isGod, onClick, onRename,
+  contextTokens, contextLimit, selected, isGod, rank, team, onClick, onRename,
   doingCount = 0, onTaskNoteClick, draggable, note, onEditNote
 }: AgentCardProps) {
   const { t } = useTranslation();
+  const titles = useStore((s) => s.company.titles);
   const [hover, setHover] = useState(false);
   const typing = useHasTerminalDraft(ptyId);
   // IDENTITY and SELECTION are two different things, and conflating them is why
@@ -220,8 +227,10 @@ export function AgentCard({
                   <span style={{
                     fontFamily: 'var(--cth-font-display)', fontSize: 7, lineHeight: '11px',
                     background: `var(--cth-${accent})`, color: 'var(--cth-ink-900)',
-                    padding: '1px 4px 0', flexShrink: 0
-                  }}>{t('agentCard.boss')}</span>                )}
+                    padding: '1px 4px 0', flexShrink: 0, maxWidth: 72,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                  }}>{titles.director.toUpperCase()}</span>
+                )}
               </span>
               {/* flexShrink:0 — the badge is a fixed 2-to-5 character chip; when
                   it was allowed to shrink, the browser resolved the overflow by
@@ -230,15 +239,32 @@ export function AgentCard({
               <PixelBadge status={typing ? 'typing' : status} style={{ flexShrink: 0 }} />
             </div>
 
-            {/* Context line: action while working, repo while idle. */}
-            <div
-              title={`${project}${action && status !== 'idle' ? ` — ${action}` : ''}`}
-              style={{
-                fontSize: 11, lineHeight: '14px',
-                color: 'var(--cth-ink-500)',
-                whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-              }}
-            >{infoLine}</div>
+            {/* Context line: the team first (a deputy's is framed), then the
+                action while working, the repo while idle. */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 5, minWidth: 0 }}>
+              {!isGod && cleanTeam(team) && (
+                <span
+                  title={rank === 'deputy' ? `${titles.deputy} · ${cleanTeam(team)}` : `${titles.employee} · ${cleanTeam(team)}`}
+                  style={{
+                    fontFamily: 'var(--cth-font-display)', fontSize: 7, lineHeight: '11px',
+                    color: 'var(--cth-ink-900)',
+                    background: rank === 'deputy' ? 'var(--cth-cream-100)' : 'transparent',
+                    boxShadow: rank === 'deputy' ? 'inset 0 0 0 1px var(--cth-ink-500)' : 'none',
+                    padding: rank === 'deputy' ? '1px 4px 0' : '1px 0 0',
+                    flexShrink: 0, maxWidth: 88,
+                    whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                  }}
+                >{cleanTeam(team).toUpperCase()}</span>
+              )}
+              <span
+                title={`${project}${action && status !== 'idle' ? ` — ${action}` : ''}`}
+                style={{
+                  fontSize: 11, lineHeight: '14px',
+                  color: 'var(--cth-ink-500)', minWidth: 0,
+                  whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                }}
+              >{infoLine}</span>
+            </div>
 
             {/* God: voice on its own compact row. Workers: the private note row.
                 Both sit ABOVE the gauge, so it is never covered. */}
@@ -255,8 +281,8 @@ export function AgentCard({
                 }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <RealtimeMichaelToggle />
-                <CostHud compact />
+                {REALTIME_VOICE && <RealtimeMichaelToggle />}
+                {REALTIME_VOICE && <CostHud compact />}
               </div>
             ) : (
               <div

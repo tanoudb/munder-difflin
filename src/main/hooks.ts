@@ -300,14 +300,16 @@ export class HookServer {
     // floor and messages agents that are long gone. Push the live roster in as
     // additionalContext at the start of each session and on every prompt, so god
     // knows the floor all the time instead of only when it remembers to Read.
-    // God-only and one line — every other agent is unaffected.
+    // God and the deputies only, one line — every other agent is unaffected.
+    // Deputy directors get it too: they dispatch to their own team, and the
+    // roster is where they see who is in it (the `team "…"` tags).
     const wantsRoster = (event === 'SessionStart' || event === 'UserPromptSubmit')
-      && !!agentId && this.hive.isGod(agentId);
+      && !!agentId && (this.hive.isGod(agentId) || !!this.hive.isDeputy?.(agentId));
     // Hand the roster the LIVE context-window occupancy (contextById) so each
     // agent line can carry a `ctx NN%` — god then sees whose context is nearly
     // full when it routes work, instead of guessing from cumulative token spend.
     const roster = wantsRoster
-      ? this.hive.rosterContext((id) => this.contextFor(id))
+      ? this.hive.rosterContext((id) => this.contextFor(id), agentId)
       : null;
 
     // Standing goal (hire Briefing) — durable roster field, re-read every cycle so

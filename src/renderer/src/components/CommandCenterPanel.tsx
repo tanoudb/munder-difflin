@@ -19,6 +19,7 @@ import { MemoryGraphPanel } from './MemoryGraphPanel';
 import { useFleetTelemetry } from '@/hooks/useTelemetry';
 import { COMMAND_GROUPS } from '@shared/claudeCommands';
 import { roleForHiveSpawn } from '@shared/agentRole';
+import { orgForSpawn } from '@shared/company';
 import { useStore, triggerHistoryVisible, type Agent } from '@/store/store';
 import { usePtyParser } from '@/hooks/usePtyParser';
 import {
@@ -493,7 +494,8 @@ function FloorTab({ seed }: { seed: { text: string; seq: number } }) {
         provider,
         isGod: a.isGod,
         isAssistant: a.isAssistant,
-        role: roleForHiveSpawn(a)
+        role: roleForHiveSpawn(a),
+        ...orgForSpawn(a)
       };
       const res = await window.cth.spawnPty({
         id: a.ptyId,

@@ -82,7 +82,6 @@
     "steerAria": "Send this agent a note"
   },
   "agentCard": {
-    "boss": "BOSS",
     "contextTitle": "Context: {{used}} / {{limit}} tokens ({{pct}}%)",
     "contextGaugeTitle": "Context gauge — fills once the agent reports activity",
     "doingTasks": "actively working {{count}} task — click to open",
@@ -157,21 +156,12 @@
     "openTerminalAria": "Open a system terminal in this agent's folder"
   },
   "settingsHero": {
-    "sponsoredBy": "Sponsored by",
-    "visit": "visit",
+    "planLabel": "Local",
+    "planBlurb": "Every agent runs on your machine, in your folders, under your own keys. No seat limit, nothing metered.",
     "whatsNew": "what's new",
     "whatsNewTitle": "Show the release notes for the update you were last told about",
-    "starOnGitHub": "star on GitHub",
     "reportProblem": "report a problem",
-    "fullChangelog": "full changelog →",
-    "announcement": "Announcement",
-    "proLaunch": "v0.5.0 launches with Munder Difflin Pro.",
-    "proCommunityFree": "Community stays free, stays open, and keeps getting updates.",
-    "proParagraph": "Pro ships with new features and integrations, with more posted throughout the year, and it stays ahead of Community, for power users who want the full potential of coding agents and agent harnesses. The Pro roadmap also includes a mobile app.",
-    "foundersWallTitle": "On the Founders' Wall?",
-    "foundersWallBody": "A month of Munder Difflin Pro free, then 50% off the annual plan. For the first 100 people on the wall.",
-    "seeTheWall": "see the wall",
-    "joinDiscord": "join Discord"
+    "fullChangelog": "full changelog →"
   },
   "officeTheme": {
     "title": "Office Theme",
@@ -206,6 +196,7 @@
     "eraseEverything": "erase everything & restart",
     "nav": {
       "general": "General",
+      "company": "Company",
       "prerequisites": "Prerequisites",
       "agentsModels": "Agents & Models",
       "autonomyBudgets": "Autonomy & Budgets",
@@ -241,13 +232,27 @@
       "telemetry": "Anonymous usage stats",
       "telemetryDesc": "A handful of anonymous events (app opened, agent spawned, feature used) — never prompts, code, paths, or agent output. Full list in TELEMETRY.md.",
       "language": "Language",
-      "languageDesc": "Choose the language for the app interface. English is the default.",
+      "languageDesc": "Choose the language for the app interface. French is the default.",
       "dangerZone": "DANGER ZONE",
       "dangerDesc": "Reset wipes {{godName}}'s memories, the entire hive (every agent, message, task, and the board), the semantic-memory palace, and all settings - then takes you back to onboarding.",
       "resetStartOver": "reset & start over",
       "arabicTerminal": "Arabic / RTL text in terminals",
       "arabicTerminalDesc": "Renders terminals with the browser's text engine so Arabic joins and reads right-to-left (xterm has no bidi of its own). Off is the GPU renderer: faster, but RTL-blind. Applies to open terminals and new ones alike.",
       "arabicTerminalFollowsLanguage": "Following your app language. Switch it here to override that either way — the choice sticks even if you change language again."
+    },
+    "company": {
+      "you": "You",
+      "youDesc": "Every agent is told who you are from its next launch on: you are the boss of the whole floor, director included. It addresses you by your title, or by your name if you give one.",
+      "ceoName": "Your name",
+      "ceoNamePlaceholder": "optional",
+      "ceoTitle": "Your title",
+      "positions": "Positions",
+      "positionsDesc": "What each position is called, on the floor and in what the agents are told. Leave a field blank to keep the default.",
+      "director": "Runs the floor ({{godName}})",
+      "deputy": "Leads a team",
+      "employee": "Works in a team",
+      "chain": "Chain of command:",
+      "restartNote": "Agents already running learn about a change at their next restart."
     },
     "agentsModels": {
       "defaultModel": "Default agent model",
@@ -532,9 +537,7 @@
     "ossByok": "Via OSS provider · BYOK",
     "ossLocalTitle": "{{slug}} · needs ~{{ram}} RAM — pull with: ollama pull {{tag}}",
     "ossByokTitle": "{{slug}} · set {{keyEnv}} in Settings → AI Engines",
-    "byokNote": "BYOK keys & local endpoints for this engine live in Settings → AI Engines. New to local models? Read run on open models or set up on a Mac Mini. Live end-to-end is pending real model calls (verify on-device).",
-    "runOnOpenModels": "run on open models",
-    "setUpMacMini": "set up on a Mac Mini",
+    "byokNote": "BYOK keys & local endpoints for this engine live in Settings → AI Engines. Live end-to-end is pending real model calls (verify on-device).",
     "command": "Command",
     "commandAuto": "Command (auto mode on)",
     "templates": "Templates",
@@ -576,9 +579,29 @@
     "hireProgress": "hire {{current}} of {{total}}",
     "skipHire": "skip hire"
   },
+  "position": {
+    "section": "Hierarchy",
+    "sectionHint": "position · team",
+    "rank": "Position",
+    "team": "Team",
+    "teamLed": "Team it leads",
+    "teamPlaceholder": "none — reports to the director",
+    "teamLedPlaceholder": "e.g. Code, Marketing…",
+    "deputyHint": "“{{deputy}}”: breaks the work down for the members of their team, follows it through and reports to the director.",
+    "employeeHint": "Takes tasks from their team lead, from the director or straight from you. Without a team, reports directly to the director.",
+    "directorNote": "{{director}}: runs the whole floor and answers to you alone."
+  },
+  "editAgent": {
+    "title": "EDIT AGENT",
+    "engineHint": "provider · model · next restart",
+    "currentModel": "{{model}} (current)",
+    "engineNote": "Engine changes are saved for the next restart. Use Command Center → Floor to restart a live session onto a new provider/model now.",
+    "positionNote": "Position and team take effect at the agent's next restart.",
+    "save": "save changes"
+  },
   "onboarding": {
     "titles": {
-      "persona": "WELCOME TO MUNDER DIFFLIN",
+      "persona": "WELCOME TO OPEN SPACE",
       "welcome": "MEET YOUR OFFICE",
       "home": "STEP 1 OF 4 · HARNESS HOME",
       "homePlain": "STEP 1 OF 4 · A HOME FOR THE APP",
@@ -591,7 +614,7 @@
     },
     "persona": {
       "headline": "A CLONE OF YOU, WORKING 24/7",
-      "body": "Munder Difflin turns the CLI agent you already use into a clone of you — one that runs an office of long-running agents and keeps working while you're away. It manages everything around them: context, memory, tasks, triggers, environment, files, and integrations.",
+      "body": "Open Space turns the CLI agent you already use into a clone of you — one that runs an office of long-running agents and keeps working while you're away. It manages everything around them: context, memory, tasks, triggers, environment, files, and integrations.",
       "bodyLocal": " Everything runs on this machine.",
       "ask": "FIRST — WHO ARE YOU? (we'll tailor the setup)",
       "technicalTitle": "I'M TECHNICAL",
@@ -692,7 +715,7 @@
       "openAtLogin": "OPEN AT LOGIN",
       "openAtLoginDesc": "Relaunch the harness after a reboot so scheduled missions resume on their own. No prompt — applies immediately.",
       "shareStats": "SHARE ANONYMOUS USAGE STATS",
-      "shareStatsDesc": "A handful of anonymous events (app opened, agent spawned, feature used) that help improve Munder Difflin — never prompts, code, file paths, or agent output. Full list in TELEMETRY.md; change anytime in Settings.",
+      "shareStatsDesc": "A handful of anonymous events (app opened, agent spawned, feature used) that help improve Open Space — never prompts, code, file paths, or agent output. Full list in TELEMETRY.md; change anytime in Settings.",
       "stayAwake": "STAY AWAKE ON POWER (MANUAL)",
       "stayAwakeDescMac": "macOS only lets you set this one yourself. In Battery → Options, turn on \"Prevent automatic sleeping when the display is off\" (on power adapter) so timers keep firing with the display asleep. Without a sleep-preventing setting the Mac still truly sleeps — work survives and catches up on wake.",
       "stayAwakeDescWindows": "Windows only lets you set this one yourself. In Settings → System → Power & battery → Screen, blank & sleep, set \"On battery power, put my device to sleep\" and \"When plugged in\" to Never (or increase them) so timers keep firing. Without a sleep-preventing setting Windows still truly sleeps — work survives and catches up on wake.",
@@ -830,9 +853,6 @@
     "cleared": "cleared",
     "localEndpoint": "LOCAL ENDPOINT · DEFAULT MODEL (PER ENGINE)",
     "defaultModelPlaceholder": "default model (provider/model)",
-    "runningOpenModels": "Running open models? Step-by-step guides:",
-    "runOnOpenModels": "run Munder Difflin on open models",
-    "setUpMacMini": "set it up on a Mac Mini",
     "autoModeCaveat": "⚠ In auto mode these engines run with full filesystem + shell access (no sandbox) — like Claude's bypass mode. Turn auto mode off (General) to make them ask first. Live end-to-end verification with real model calls is pending your keys / a local LLM."
   },
   "mcpDefaults": {
@@ -881,7 +901,7 @@
     "downloadingHeadline": "Downloading v{{version}}",
     "downloadingDetail": "{{percent}}% done. You can keep working; the restart is yours to trigger.",
     "downloadedHeadline": "v{{version}} is ready to install",
-    "downloadedDetail": "Restart Munder Difflin to finish updating from v{{v}}.",
+    "downloadedDetail": "Restart Open Space to finish updating from v{{v}}.",
     "restartBtn": "Restart to update",
     "manualDetail": "This install can't update itself — download it from the release page.",
     "manualDetailReason": "This install can't update itself ({{reason}}) — download it from the release page.",
@@ -908,7 +928,7 @@
     "webhooks": "WEBHOOKS",
     "webhooksBlurb": "Let an outside system post work in.",
     "organisation": "ORGANISATION",
-    "organisationBlurb": "Let a teammate's Munder Difflin message yours."
+    "organisationBlurb": "Let a teammate's Open Space message yours."
   },
   "orgSection": {
     "acceptMessages": "Accept messages from your organisation",
